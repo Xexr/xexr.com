@@ -1,0 +1,68 @@
+{
+  "name": "xexr.com",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "build:webpack": "next build --webpack",
+    "dev": "next dev --port 3005",
+    "start": "next start --port 3000",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint .",
+    "test": "pnpm test:unit && pnpm test:integration && pnpm test:e2e",
+    "test:unit": "vitest run",
+    "test:integration": "vitest run -c vitest.config.integration.ts --passWithNoTests",
+    "test:e2e": "vitest run -c vitest.config.e2e.ts --passWithNoTests",
+    "test:coverage": "vitest run -c vitest.config.coverage.ts"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.0.0",
+    "@t3-oss/env-nextjs": "^0.13.10",
+    "@tailwindcss/typography": "^0.5.19",
+    "@vercel/analytics": "^1.6.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "geist": "^1.5.1",
+    "lucide-react": "^0.561.0",
+    "next": "16.0.10",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "shadcn": "^3.6.2",
+    "sharp": "^0.34.5",
+    "tailwind-merge": "^3.4.0",
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/eslint": "^9.6.1",
+    "@types/node": "^25.0.3",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitest/coverage-v8": "^4.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "16.0.10",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.0"
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.37.0"
+  },
+  "packageManager": "pnpm@9.9.0",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.3",
+      "@types/react-dom": "19.2.3",
+      "zod-validation-error": "^5.0.0"
+    }
+  }
+}
