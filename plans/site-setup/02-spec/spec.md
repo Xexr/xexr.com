@@ -549,6 +549,42 @@ The following were considered but explicitly excluded from this version:
 
 ---
 
+## Spec Review
+
+**Reviewed:** 2026-02-22
+**Gaps identified:** 15 (0 critical, 7 important, 8 nice-to-have)
+**Gaps resolved:** 15 (all either already in Open Questions or classified as implementation details)
+
+### Assessment Summary
+
+| Category | Status | Notes |
+|----------|--------|-------|
+| Objective | Clear | Two engineers would build recognisably the same site |
+| Done Criteria | Clear | "Shipped" = deployed + first post live; explicit scope |
+| Scope | Clear | Out of Scope section is comprehensive with rationale |
+| Constraints | Clear | Performance targets, accessibility requirements, responsive breakpoints all specified |
+| Dependencies | Clear | New packages listed, existing codebase integration points documented |
+| Safety | Clear | Progressive enhancement approach; no destructive migrations; zero-downtime deploys |
+
+### Items Acknowledged as Open Questions
+
+These are implementation-time decisions already captured in the spec's Open Questions section:
+- Vibe preset exact hex values
+- Shiki theme token colours
+- Giscus configuration (repo, category)
+- Plausible vs Vercel Analytics coexistence
+- Bookshelf data source format
+
+### Minor Gaps for Implementation
+
+These don't need spec changes — they're standard implementation decisions:
+- Subscribe CTA visual treatment (follows site's established component patterns)
+- Mobile hamburger menu details (standard responsive pattern)
+- RSS full-content confirmed by auto-answer Q25
+- Print stylesheet (not needed for dark dev blog)
+
+---
+
 ## Appendix: Source Files
 
 - `plans/site-setup/00-prompt/prompt.md` — Original project brief (424 lines)
