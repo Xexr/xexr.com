@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xexr.com — Refined v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-elevated: #0a0a0a;
+    --bg-card: #0f0f0f;
+    --border: #1a1a1a;
+    --border-hover: #2a2a2a;
+    --text: #a0a0a0;
+    --text-bright: #e8e8e8;
+    --text-muted: #555555;
+    --accent: #00ff88;
+    --accent-dim: #00ff8818;
+    --accent-soft: #00ff8825;
+    --accent-glow: #00ff8810;
+    --accent-r: 0;
+    --accent-g: 255;
+    --accent-b: 136;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --transition-theme: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(255,255,255,0.004) 2px, rgba(255,255,255,0.004) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Theme transitions on colour-affected elements only */
+  .nav-brand-icon,
+  .nav-brand-text,
+  .nav-links a,
+  .post-title,
+  .post-number,
+  .tag,
+  .code-body .string,
+  .code-body .line-highlight,
+  .project-cell-name,
+  .project-cell-status,
+  .project-cell-status::before,
+  .subscribe-pill a,
+  .footer-brand,
+  .footer-col a,
+  .now-dot,
+  .now-ticker-link,
+  .section-header a,
+  .post-item::after,
+  .hero h1 .accent,
+  .hero-links .primary,
+  .avatar-ring-bg,
+  .vibe-btn,
+  .vibe-hex {
+    transition: color var(--transition-theme),
+                background-color var(--transition-theme),
+                border-color var(--transition-theme),
+                box-shadow var(--transition-theme);
+  }
+
+  /* ========== NAV ========== */
+  nav {
+    padding: 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.6s ease;
+    position: relative;
+    z-index: 10;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-brand-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg);
+  }
+
+  .nav-brand-text {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ========== HERO with full-width particles ========== */
+  .hero-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-canvas {
+    position: absolute;
+    top: 0;
+    left: -24px;
+    right: -24px;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #heroCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Fade particles at edges */
+  .hero-canvas::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(to right, var(--bg) 0%, transparent 8%, transparent 92%, var(--bg) 100%),
+      linear-gradient(to bottom, transparent 0%, transparent 85%, var(--bg) 100%);
+    pointer-events: none;
+  }
+
+  .hero {
+    padding: 80px 0 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: start;
+    animation: fadeUp 0.8s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content { position: relative; }
+
+  .hero h1 {
+    font-family: var(--font-sans);
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 .accent { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .hero-links {
+    display: flex;
+    gap: 12px;
+  }
+
+  .hero-links a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .hero-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .hero-links .primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .hero-links .primary:hover {
+    opacity: 0.9;
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 24px var(--accent-dim);
+  }
+
+  /* Avatar */
+  .hero-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .avatar-ring {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    padding: 3px;
+    position: relative;
+  }
+
+  .avatar-ring-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--accent) 0deg,
+      var(--accent-dim) 120deg,
+      var(--accent) 240deg,
+      var(--accent-dim) 360deg
+    );
+    opacity: 0.7;
+  }
+
+  .avatar-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    border: 2px solid var(--bg);
+  }
+
+  .avatar-placeholder {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+
+  .avatar-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ========== VIBE BUTTON + DRAWER ========== */
+  .vibe-container {
+    position: relative;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.8s ease 0.2s both;
+  }
+
+  .vibe-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+  }
+
+  .vibe-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .vibe-btn:hover {
+    border-color: var(--accent-dim);
+    color: var(--text);
+  }
+
+  .vibe-btn-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-dim);
+  }
+
+  .vibe-hex {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .vibe-btn-arrow {
+    font-size: 10px;
+    transition: transform 0.3s;
+  }
+
+  .vibe-container.open .vibe-btn-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Now items on the right of vibe bar */
+  .vibe-bar-now {
+    display: flex;
+    gap: 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .vibe-bar-now-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .now-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  .vibe-bar-now a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 11px;
+  }
+
+  /* Drawer */
+  .vibe-drawer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+  }
+
+  .vibe-container.open .vibe-drawer {
+    max-height: 120px;
+    padding: 0 0 16px 0;
+  }
+
+  .vibe-drawer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .vibe-presets {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .vibe-presets-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-right: 4px;
+  }
+
+  .vibe-preset {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .vibe-preset:hover {
+    transform: scale(1.15);
+  }
+
+  .vibe-preset.active {
+    border-color: var(--text-bright);
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  }
+
+  .colour-wheel-track {
+    height: 24px;
+    border-radius: 12px;
+    background: linear-gradient(
+      90deg,
+      #ff4444 0%, #ff8844 12%, #ffcc00 24%, #44ff88 36%,
+      #00ffcc 48%, #22d3ee 60%, #4488ff 72%, #8844ff 84%,
+      #ff44cc 96%, #ff4444 100%
+    );
+    cursor: pointer;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+
+  .colour-wheel-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid var(--text-bright);
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-dim), 0 2px 6px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+
+  /* ========== POSTS ========== */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 48px 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .section-header a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .section-header a:hover { color: var(--accent); }
+
+  .post-list { list-style: none; }
+
+  .post-item {
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .post-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  .post-item:hover::after { width: 100%; }
+
+  .post-item a {
+    display: block;
+    padding: 24px 0;
+    text-decoration: none;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .post-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0.6;
+    min-width: 28px;
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .post-reading-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  .post-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+
+  .post-item:hover .post-title { color: var(--accent); }
+
+  .post-excerpt {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    padding: 2px 8px;
+    border: 1px solid var(--accent-dim);
+    border-radius: 4px;
+    background: var(--accent-glow);
+  }
+
+  /* Code block */
+  .code-preview {
+    margin: 48px 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-hover);
+  }
+
+  .code-dot:first-child { background: #ff5f57; }
+  .code-dot:nth-child(2) { background: #febc2e; }
+  .code-dot:nth-child(3) { background: #28c840; }
+
+  .code-filename {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .code-copy {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+
+  .code-copy:hover {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+  }
+
+  .code-body {
+    padding: 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+
+  .code-body .keyword { color: #ff79c6; }
+  .code-body .string { color: var(--accent); }
+  .code-body .comment { color: var(--text-muted); }
+  .code-body .func { color: #8be9fd; }
+  .code-body .const { color: #bd93f9; }
+  .code-body .line-highlight {
+    background: var(--accent-dim);
+    display: block;
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  /* Projects */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+    animation: fadeUp 0.8s ease 0.6s both;
+  }
+
+  .project-cell {
+    background: var(--bg-card);
+    padding: 20px;
+    text-decoration: none;
+    display: block;
+    transition: background 0.2s;
+  }
+
+  .project-cell:hover { background: var(--bg-elevated); }
+
+  .project-cell-name {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .project-cell:hover .project-cell-name { color: var(--accent); }
+
+  .project-cell-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .project-cell-status {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .project-cell-status::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* Subscribe */
+  .subscribe-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 48px 0;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    animation: fadeUp 0.8s ease 0.7s both;
+  }
+
+  .subscribe-pill-text {
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .subscribe-pill-text strong {
+    color: var(--text-bright);
+    font-weight: 600;
+  }
+
+  .subscribe-pill a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .subscribe-pill a:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 20px var(--accent-dim);
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 48px;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    animation: fadeIn 1s ease 0.8s both;
+  }
+
+  .footer-left .footer-brand {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .footer-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-cols { display: flex; gap: 48px; }
+
+  .footer-col h4 {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .footer-col a {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .post-item { animation: fadeUp 0.5s ease both; }
+  .post-item:nth-child(1) { animation-delay: 0.3s; }
+  .post-item:nth-child(2) { animation-delay: 0.4s; }
+  .post-item:nth-child(3) { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="/" class="nav-brand">
+        <div class="nav-brand-icon">x</div>
+        <span class="nav-brand-text">xexr</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/posts">posts</a></li>
+        <li><a href="/projects">projects</a></li>
+        <li><a href="/about">about</a></li>
+        <li><a href="/now">now</a></li>
+        <li><a href="/uses">uses</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero with full-width particles -->
+    <div class="hero-wrap">
+      <div class="hero-canvas">
+        <canvas id="heroCanvas"></canvas>
+      </div>
+
+      <section class="hero">
+        <div class="hero-content">
+          <h1>Dane Poyzer<span class="accent">.</span><br>Building with AI<span class="accent">.</span></h1>
+          <p class="hero-sub">Chartered accountant turned indie hacker. Building AI-powered tools, writing about orchestration, agents, and what I learn along the way.</p>
+          <div class="hero-links">
+            <a href="/posts" class="primary">Read the blog</a>
+            <a href="https://substack.com/@danepoyzer">Subscribe</a>
+            <a href="https://github.com/xexr">GitHub</a>
+          </div>
+        </div>
+
+        <div class="hero-avatar">
+          <div class="avatar-ring">
+            <div class="avatar-ring-bg"></div>
+            <div class="avatar-inner">
+              <span class="avatar-placeholder">DP</span>
+            </div>
+          </div>
+          <span class="avatar-name">@danepoyzer</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- Vibe bar with collapsible drawer -->
+    <div class="vibe-container" id="vibeContainer">
+      <div class="vibe-bar">
+        <button class="vibe-btn" id="vibeToggle">
+          <span class="vibe-btn-dot"></span>
+          <span>vibe</span>
+          <span class="vibe-hex" id="vibeHex">#00ff88</span>
+          <span class="vibe-btn-arrow">▼</span>
+        </button>
+
+        <div class="vibe-bar-now">
+          <div class="vibe-bar-now-item">
+            <div class="now-dot"></div>
+            <span>Moderating Gastown</span>
+          </div>
+          <div class="vibe-bar-now-item">
+            <div class="now-dot" style="animation-delay:0.5s"></div>
+            <span>Building dypt</span>
+          </div>
+          <a href="/now">now →</a>
+        </div>
+      </div>
+
+      <div class="vibe-drawer">
+        <div class="vibe-drawer-inner">
+          <div class="vibe-presets">
+            <span class="vibe-presets-label">Presets</span>
+            <button class="vibe-preset active" data-hex="#00ff88" style="background:#00ff88" title="Mint"></button>
+            <button class="vibe-preset" data-hex="#e8a838" style="background:#e8a838" title="Amber"></button>
+            <button class="vibe-preset" data-hex="#22d3ee" style="background:#22d3ee" title="Cyan"></button>
+            <button class="vibe-preset" data-hex="#f97066" style="background:#f97066" title="Coral"></button>
+            <button class="vibe-preset" data-hex="#a5b4fc" style="background:#a5b4fc" title="Ice"></button>
+            <button class="vibe-preset" data-hex="#4ade80" style="background:#4ade80" title="Green"></button>
+            <button class="vibe-preset" data-hex="#fb923c" style="background:#fb923c" title="Orange"></button>
+            <button class="vibe-preset" data-hex="#f472b6" style="background:#f472b6" title="Pink"></button>
+          </div>
+          <div class="colour-wheel-track" id="colourWheel">
+            <div class="colour-wheel-thumb" id="colourThumb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Recent Posts</h2>
+      <a href="/posts">View all →</a>
+    </div>
+
+    <ul class="post-list">
+      <li class="post-item">
+        <a href="/posts/what-i-learned-about-ai-orchestration-from-inside-gastown">
+          <div class="post-meta">
+            <span class="post-number">#003</span>
+            <span class="post-date">2026-02-18</span>
+            <span class="post-reading-time">12 min</span>
+          </div>
+          <div class="post-title">What I Learned About AI Orchestration from Inside Gastown</div>
+          <div class="post-excerpt">Agent hierarchies, merge queues, and the design bottleneck — practical lessons from helping build Steve Yegge's agent orchestrator.</div>
+          <div class="post-tags">
+            <span class="tag">ai</span>
+            <span class="tag">orchestration</span>
+            <span class="tag">gastown</span>
+          </div>
+        </a>
+      </li>
+      <li class="post-item">
+        <a href="/posts/building-in-public-as-a-chartered-accountant">
+          <div class="post-meta">
+            <span class="post-number">#002</span>
+            <span class="post-date">2026-02-10</span>
+            <span class="post-reading-time">8 min</span>
+          </div>
+          <div class="post-title">Building in Public as a Chartered Accountant Turned Indie Hacker</div>
+          <div class="post-excerpt">How a decade in finance shaped the way I think about products, risk, and building things that last.</div>
+          <div class="post-tags">
+            <span class="tag">indie-hacking</span>
+          </div>
+        </a>
+      </li>
+      <li class="post-item">
+        <a href="/posts/hello-world">
+          <div class="post-meta">
+            <span class="post-number">#001</span>
+            <span class="post-date">2026-02-01</span>
+            <span class="post-reading-time">4 min</span>
+          </div>
+          <div class="post-title">Hello World from xexr.com</div>
+          <div class="post-excerpt">Why I'm writing, what I'm building, and what to expect from this corner of the internet.</div>
+          <div class="post-tags">
+            <span class="tag">meta</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <div class="code-preview">
+      <div class="code-header">
+        <div class="code-dot"></div>
+        <div class="code-dot"></div>
+        <div class="code-dot"></div>
+        <span class="code-filename">orchestrator.ts</span>
+        <button class="code-copy">Copy</button>
+      </div>
+      <div class="code-body">
+        <span class="comment">// What I'm currently exploring</span><br>
+        <span class="keyword">const</span> <span class="const">stack</span> = {<br>
+        &nbsp;&nbsp;orchestration: <span class="string">"gastown"</span>,<br>
+        <span class="line-highlight">&nbsp;&nbsp;building: [<span class="string">"dypt"</span>, <span class="string">"makeacraft"</span>],</span>
+        &nbsp;&nbsp;writing: <span class="string">"xexr.com"</span>,<br>
+        &nbsp;&nbsp;status: <span class="string">"shipping"</span>,<br>
+        } <span class="keyword">satisfies</span> <span class="func">CurrentFocus</span>;<br>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Projects</h2>
+      <a href="/projects">View all →</a>
+    </div>
+
+    <div class="projects-grid">
+      <a href="#" class="project-cell">
+        <div class="project-cell-name">dypt</div>
+        <div class="project-cell-desc">AI-powered task manager. Simple, fast, value-adding.</div>
+        <div class="project-cell-status">Active</div>
+      </a>
+      <a href="#" class="project-cell">
+        <div class="project-cell-name">makeacraft</div>
+        <div class="project-cell-desc">Custom craft ideas for kids based on materials and interests.</div>
+        <div class="project-cell-status">Active</div>
+      </a>
+      <a href="#" class="project-cell">
+        <div class="project-cell-name">Poyzer Tech</div>
+        <div class="project-cell-desc">The holding company supporting the product portfolio.</div>
+        <div class="project-cell-status">Active</div>
+      </a>
+    </div>
+
+    <div class="subscribe-pill">
+      <div class="subscribe-pill-text">
+        <strong>Don't miss a post.</strong> New writing on AI, orchestration, and indie building.
+      </div>
+      <a href="https://substack.com/@danepoyzer">Subscribe →</a>
+    </div>
+
+    <footer>
+      <div class="footer-left">
+        <span class="footer-brand">xexr</span>
+        <p>Dane Poyzer · Indie hacker building AI tools.<br>Chartered accountant. Based in the UK.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <a href="/posts">Posts</a>
+          <a href="/projects">Projects</a>
+          <a href="/about">About</a>
+          <a href="/now">Now</a>
+          <a href="/uses">Uses</a>
+          <a href="/bookshelf">Bookshelf</a>
+          <a href="/colophon">Colophon</a>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <a href="https://github.com/xexr">GitHub</a>
+          <a href="https://twitter.com/danepoyzer">Twitter</a>
+          <a href="https://substack.com/@danepoyzer">Substack</a>
+          <a href="/feed.xml">RSS</a>
+          <a href="mailto:dane@poyzer.net">Email</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="footer-bottom">© 2026 Dane Poyzer</div>
+  </div>
+
+  <script>
+    // ========== COLOUR SYSTEM ==========
+    function hexToRgb(hex) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return { r, g, b };
+    }
+
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    function hexToHue(hex) {
+      const { r, g, b } = hexToRgb(hex);
+      const rn = r / 255, gn = g / 255, bn = b / 255;
+      const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+      let h = 0;
+      if (max !== min) {
+        const d = max - min;
+        if (max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0)) * 60;
+        else if (max === gn) h = ((bn - rn) / d + 2) * 60;
+        else h = ((rn - gn) / d + 4) * 60;
+      }
+      return h;
+    }
+
+    function applyColour(hex) {
+      const rgb = hexToRgb(hex);
+      const root = document.documentElement;
+      root.style.setProperty('--accent', hex);
+      root.style.setProperty('--accent-dim', hex + '18');
+      root.style.setProperty('--accent-soft', hex + '25');
+      root.style.setProperty('--accent-glow', hex + '10');
+      root.style.setProperty('--accent-r', rgb.r);
+      root.style.setProperty('--accent-g', rgb.g);
+      root.style.setProperty('--accent-b', rgb.b);
+
+      // Update UI elements
+      document.getElementById('vibeHex').textContent = hex;
+      const thumbEl = document.getElementById('colourThumb');
+      const hue = hexToHue(hex);
+      thumbEl.style.left = (hue / 360 * 100) + '%';
+      thumbEl.style.background = hex;
+      thumbEl.style.boxShadow = `0 0 12px ${hex}44, 0 2px 6px rgba(0,0,0,0.5)`;
+
+      // Update dot in vibe button
+      document.querySelector('.vibe-btn-dot').style.background = hex;
+      document.querySelector('.vibe-btn-dot').style.boxShadow = `0 0 8px ${hex}44`;
+
+      // Update preset active state
+      document.querySelectorAll('.vibe-preset').forEach(p => {
+        p.classList.toggle('active', p.dataset.hex.toLowerCase() === hex.toLowerCase());
+      });
+
+      // Save to localStorage
+      try { localStorage.setItem('xexr-vibe', hex); } catch(e) {}
+    }
+
+    // ========== VIBE TOGGLE ==========
+    const vibeContainer = document.getElementById('vibeContainer');
+    document.getElementById('vibeToggle').addEventListener('click', () => {
+      vibeContainer.classList.toggle('open');
+    });
+
+    // ========== PRESETS ==========
+    document.querySelectorAll('.vibe-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyColour(btn.dataset.hex);
+      });
+    });
+
+    // ========== COLOUR WHEEL ==========
+    const wheel = document.getElementById('colourWheel');
+    let isDragging = false;
+
+    function setFromWheel(x) {
+      const rect = wheel.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+      const hue = pct * 360;
+      const hex = hslToHex(hue, 85, 65);
+      applyColour(hex);
+    }
+
+    wheel.addEventListener('mousedown', (e) => { isDragging = true; setFromWheel(e.clientX); });
+    document.addEventListener('mousemove', (e) => { if (isDragging) setFromWheel(e.clientX); });
+    document.addEventListener('mouseup', () => { isDragging = false; });
+    wheel.addEventListener('touchstart', (e) => { isDragging = true; setFromWheel(e.touches[0].clientX); }, { passive: true });
+    document.addEventListener('touchmove', (e) => { if (isDragging) setFromWheel(e.touches[0].clientX); }, { passive: true });
+    document.addEventListener('touchend', () => { isDragging = false; });
+
+    // ========== LOAD SAVED COLOUR ==========
+    try {
+      const saved = localStorage.getItem('xexr-vibe');
+      if (saved) applyColour(saved);
+      else applyColour('#00ff88');
+    } catch(e) {
+      applyColour('#00ff88');
+    }
+
+    // ========== PARTICLE CANVAS ==========
+    const canvas = document.getElementById('heroCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: 0, y: 0, active: false };
+
+    function resizeCanvas() {
+      const wrap = canvas.parentElement;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = wrap.offsetWidth * dpr;
+      canvas.height = wrap.offsetHeight * dpr;
+      canvas.style.width = wrap.offsetWidth + 'px';
+      canvas.style.height = wrap.offsetHeight + 'px';
+      ctx.scale(dpr, dpr);
+    }
+
+    class Particle {
+      constructor(w, h) {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.speedY = (Math.random() - 0.5) * 0.25;
+        this.opacity = Math.random() * 0.4 + 0.1;
+        this.pulseSpeed = Math.random() * 0.02 + 0.005;
+        this.pulseOffset = Math.random() * Math.PI * 2;
+        this.w = w;
+        this.h = h;
+      }
+
+      update(time) {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > this.w) this.speedX *= -1;
+        if (this.y < 0 || this.y > this.h) this.speedY *= -1;
+        this.currentOpacity = this.opacity * (0.5 + 0.5 * Math.sin(time * this.pulseSpeed + this.pulseOffset));
+
+        if (mouse.active) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            const force = (100 - dist) / 100 * 0.6;
+            this.x += (dx / dist) * force;
+            this.y += (dy / dist) * force;
+          }
+        }
+      }
+
+      draw(r, g, b) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.currentOpacity})`;
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      const wrap = canvas.parentElement;
+      const w = wrap.offsetWidth;
+      const h = wrap.offsetHeight;
+      particles = [];
+      const count = Math.floor((w * h) / 4000);
+      for (let i = 0; i < Math.min(count, 100); i++) {
+        particles.push(new Particle(w, h));
+      }
+    }
+
+    function drawConnections(r, g, b) {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 90) {
+            const opacity = (1 - dist / 90) * 0.12;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate(time) {
+      const wrap = canvas.parentElement;
+      ctx.clearRect(0, 0, wrap.offsetWidth, wrap.offsetHeight);
+
+      const style = getComputedStyle(document.documentElement);
+      const r = style.getPropertyValue('--accent-r').trim() || 0;
+      const g = style.getPropertyValue('--accent-g').trim() || 255;
+      const b = style.getPropertyValue('--accent-b').trim() || 136;
+
+      particles.forEach(p => {
+        p.update(time);
+        p.draw(r, g, b);
+      });
+
+      drawConnections(r, g, b);
+      requestAnimationFrame(animate);
+    }
+
+    // Mouse tracking
+    const heroWrap = document.querySelector('.hero-wrap');
+    heroWrap.style.pointerEvents = 'auto';
+    heroWrap.addEventListener('mousemove', (e) => {
+      const canvasWrap = canvas.parentElement;
+      const rect = canvasWrap.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+    });
+
+    heroWrap.addEventListener('mouseleave', () => { mouse.active = false; });
+
+    resizeCanvas();
+    initParticles();
+    animate(0);
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+  </script>
+</body>
+</html>
