@@ -22,7 +22,7 @@ The core value proposition is a premium dark-first reading experience with a sig
 
 - **Questions addressed:** 142 (all priorities: P0-P3)
 - **Auto-answered (best practices):** 97
-- **Human decisions:** 44 (across 3 interview rounds)
+- **Human decisions:** 44 (across 3 interview rounds; 1 branch point resolved via cascading)
 - **Deferred to future:** 6
 
 ### Foundational Decisions (Round 1)
@@ -188,7 +188,9 @@ Full auto-answers with rationale preserved in `plans/site-setup/01-scope/questio
 
 ### Architecture Overview
 
-A static-first Next.js 16 site using App Router with file-based MDX content via Velite. Server components render all content pages; client components are isolated to interactive features (Vibe system, particle canvas, Giscus comments, code copy buttons).
+**Note:** This section describes the **target architecture**. The current codebase is an early scaffold with placeholder content, empty navigation, and default template styling. All systems described below (Velite, Vibe, particles, Giscus, etc.) need to be built.
+
+A static-first Next.js 16 site using App Router with file-based MDX content via Velite. Server components render all content pages; client components are isolated to interactive features (Vibe system, particle canvas, Giscus comments, code copy buttons). All pages live within the existing `(app)` route group for layout separation.
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -210,11 +212,11 @@ A static-first Next.js 16 site using App Router with file-based MDX content via 
 │         │                                     │
 │  ┌──────▼──────┐                             │
 │  │ /content/    │  File-based MDX + assets   │
-│  │ posts/*.mdx  │                             │
+│  │ posts/*/     │  Directory per post         │
 │  └─────────────┘                             │
 ├─────────────────────────────────────────────┤
 │  External: Giscus (GitHub Discussions)       │
-│  External: Plausible Analytics (self-hosted) │
+│  External: Vercel Analytics (launch)         │
 │  External: Substack (newsletter redirect)    │
 └─────────────────────────────────────────────┘
 ```
@@ -334,7 +336,7 @@ bookshelf: {
 1. Notices gentle pulse on Vibe pill in status bar
 2. Clicks pill -> drawer opens (bottom sheet mobile, popover desktop)
 3. Taps a preset or drags spectrum slider
-4. Sees instant site-wide colour transition (0.4s cubic-bezier)
+4. Sees smooth site-wide colour transition (0.4s cubic-bezier)
 5. Closes drawer (backdrop/Escape/button) -> choice persists via localStorage
 6. Returns days later -> same colour loaded before first paint
 
@@ -380,11 +382,16 @@ bookshelf: {
 - rehype-pretty-code + Shiki — syntax highlighting
 - Giscus React component
 - Plus Jakarta Sans + JetBrains Mono (via `next/font`)
-- @vercel/og (Satori) — OG image generation
 
-**Fonts to replace:**
-- Current: Geist Sans/Mono + Roboto
-- Target: Plus Jakarta Sans (headings + body) + JetBrains Mono (code + UI)
+**OG image generation:** Already available via `next/og` (built into Next.js 16). No additional package needed. Existing route at `/api/og/route.tsx` needs rebranding (mint accent, #050505 background, Plus Jakarta Sans font).
+
+**Font migration (multi-file):**
+1. Remove `geist` package from dependencies and `Roboto` from `next/font/google` imports
+2. Add Plus Jakarta Sans and JetBrains Mono via `next/font`
+3. Update CSS variable fallbacks in `globals.css` (`--font-sans`, `--font-mono`)
+4. Update root layout to apply new font classes
+
+**Analytics:** Vercel Analytics (already integrated) for launch. Plausible self-hosted deferred to post-launch.
 
 ### Page Specifications
 
@@ -512,12 +519,60 @@ The following were considered but explicitly excluded from this version:
 - **PWA/offline** — Not standard for blogs. Manifest can stay, no service worker.
 - **i18n** — Brief says don't build yet. Use centralised constants file for strings.
 - **Newsletter embed** — Substack redirect is sufficient. Zero implementation.
-- **Advanced analytics** — Plausible self-hosted covers needs.
+- **Plausible Analytics at launch** — Use Vercel Analytics for now. Add Plausible self-hosted post-launch.
 - **Template marketplace/sharing for Vibe** — No shareable configs at launch.
 - **Breadcrumbs** — Site is max 2 levels deep (/posts/[slug]). Header nav suffices.
 - **Buffer/scheduled posts** — Silence during quiet periods is the policy.
 - **Evergreen page timestamps** — Only Now page shows last-updated date.
 - **Colophon performance stats** — Too much maintenance burden.
+
+---
+
+## Codebase Migration
+
+The current codebase is scaffolded from a template and contains defaults that conflict with this spec. These must be cleaned up during implementation:
+
+**Critical cleanup:**
+- Remove `maximumScale: 1` from viewport config in `src/app/layout.tsx` (WCAG zoom violation)
+- Replace `Organization` JSON-LD schema with `WebSite` schema; add page-level schemas (Person, BlogPosting)
+- Rewrite `sitemap.ts` to generate from Velite collections (currently has `/signin`, `/signup`, `/forgot-password`)
+- Rewrite `robots.ts` to remove irrelevant `/admin`, `/dashboard` blocks
+- Update `siteConfig.ts`: set URL to `https://xexr.com`, replace placeholder keywords/topics/email
+- Rebrand OG route (`/api/og/route.tsx`): mint accent (#00ff88), #050505 background, Plus Jakarta Sans
+- Add `<meta name="darkreader-lock">` to root layout `<head>`
+- Add skip-to-content link as first focusable element; add `id="main-content"` to `<main>`
+- Replace mobile nav with hamburger/drawer pattern (currently renders MainNav directly)
+
+**CSS token migration:**
+- Replace all OKLCh colour tokens in `globals.css` with spec palette (background #050505, foreground #e8e8e8, etc.)
+- The Vibe system will dynamically set `--accent`; base tokens need manual update
+
+**Content structure (directory-based):**
+- Each post is a directory: `/content/posts/my-post/index.mdx` with co-located images
+- Slug derived from directory name
+- Velite glob pattern: `content/posts/*/index.mdx`
+
+**Route organisation:**
+- Keep existing `(app)` route group. All new pages go inside `src/app/(app)/`
+- Status bar rendered in root layout (`src/app/layout.tsx`) outside `(app)` group for full-width positioning
+
+**Metadata per page type:**
+- Homepage: `openGraph.type: "website"`
+- Post pages: `openGraph.type: "article"` with `published_time`, `author`, `tags`
+
+**Tag filtering + pagination interaction:**
+- Filter resets pagination to page 1
+- Pagination operates within the filtered set
+- Both sync to URL query params (`/posts?tag=ai&page=2`)
+
+**CSP/security headers:**
+- Define Content-Security-Policy in `next.config.ts` headers
+- Allow inline script for Vibe colour injection (nonce or hash)
+- Allow Giscus embed domain (`giscus.app`)
+
+**README/docs cleanup:**
+- Remove references to nonexistent `pnpm db:start` / `pnpm db:studio` scripts
+- Update to reflect blog architecture (no database)
 
 ---
 
@@ -530,58 +585,65 @@ The following were considered but explicitly excluded from this version:
 - [ ] Bookshelf data source (JSON file vs MDX vs Goodreads API — manual is simplest)
 - [ ] Shiki theme customisation (custom dark theme matching site palette, with accent for strings)
 - [ ] Exact breakpoint for ToC sidebar (suggested 1200px, needs testing)
-- [ ] RSS feed: full-content vs excerpt (brief says full-content, confirm)
 - [ ] Giscus configuration: which GitHub repo, discussion category, theme
-- [ ] Plausible self-hosted setup details (existing VPS, Docker Compose)
 
 ---
 
 ## Next Steps
 
-- [ ] Review this spec with stakeholders
-- [ ] Run spec review (multimodal: GPT 5.3, Gemini 3 Pro, Opus 4.6) to verify completeness
+- [x] Spec review (multimodal: Opus 4.6, GPT 5.3, Gemini 3 Pro) — complete
 - [ ] Create implementation plan (break into beads epics/issues)
-- [ ] Set up Velite + MDX pipeline
+- [ ] Codebase migration (clean up scaffold defaults — see Codebase Migration section)
+- [ ] Set up Velite + MDX pipeline with directory-based content structure
 - [ ] Implement Vibe system
 - [ ] Build post page (primary design focus)
+- [ ] Write unit tests for Vibe persistence/sync, Velite schema validation, colour utilities
 - [ ] Write and publish first post
 - [ ] Deploy to Vercel
 
 ---
 
-## Spec Review
+## Multi-Model Review
 
 **Reviewed:** 2026-02-22
-**Gaps identified:** 15 (0 critical, 7 important, 8 nice-to-have)
-**Gaps resolved:** 15 (all either already in Open Questions or classified as implementation details)
+**Models:** Opus 4.6, GPT 5.3 Codex, Gemini 3 Pro
+**Issues Found:** 28 (0 critical, 6 high, 9 medium, 13 low)
 
-### Assessment Summary
+### Findings Addressed
 
-| Category | Status | Notes |
-|----------|--------|-------|
-| Objective | Clear | Two engineers would build recognisably the same site |
-| Done Criteria | Clear | "Shipped" = deployed + first post live; explicit scope |
-| Scope | Clear | Out of Scope section is comprehensive with rationale |
-| Constraints | Clear | Performance targets, accessibility requirements, responsive breakpoints all specified |
-| Dependencies | Clear | New packages listed, existing codebase integration points documented |
-| Safety | Clear | Progressive enhancement approach; no destructive migrations; zero-downtime deploys |
+| # | Issue | Resolution |
+|---|-------|------------|
+| 1 | Viewport maximumScale blocks zoom | Added to Codebase Migration: remove maximumScale: 1 |
+| 2 | JSON-LD schema mismatch | Added to Codebase Migration: replace Organization with WebSite |
+| 3 | OG image wrong colours/branding | Added to Codebase Migration: rebrand OG route |
+| 4 | Sitemap/robots stale content | Added to Codebase Migration: rewrite from Velite collections |
+| 5 | Canonical domain migration | Added to Codebase Migration: update siteConfig URL |
+| 6 | Spec blurs current vs target state | Added "target architecture" note to Architecture Overview |
+| 7 | Colour token migration | Added to Codebase Migration: CSS token update |
+| 8 | Font stack replacement scope | Expanded in Integration Points with full migration steps |
+| 9 | (app) route group guidance | Resolved: keep (app) group, new pages go inside it |
+| 10 | Content structure ambiguity | Resolved: directory-based, updated architecture diagram |
+| 11 | Test strategy missing | Added test step to Next Steps |
+| 12 | Analytics strategy | Resolved: Vercel only at launch, Plausible deferred |
+| 13 | Tag filtering + pagination | Added interaction rules to Codebase Migration |
+| 14 | CSP/security headers | Added CSP requirements to Codebase Migration |
+| 15 | "instant" vs "0.4s" wording | Fixed: changed to "smooth" |
+| 16 | @vercel/og not needed | Removed from dependencies, noted next/og is built-in |
+| 17 | Question accounting | Note: 97 auto + 45 branch points = 142. 44 answered + 1 not asked (inferred from cascades) |
+| 18 | Self-review gap count | Superseded by this multi-model review |
+| 19-28 | Low-severity items | Addressed via Codebase Migration section and inline fixes |
 
-### Items Acknowledged as Open Questions
+### Ambiguities Resolved
 
-These are implementation-time decisions already captured in the spec's Open Questions section:
-- Vibe preset exact hex values
-- Shiki theme token colours
-- Giscus configuration (repo, category)
-- Plausible vs Vercel Analytics coexistence
-- Bookshelf data source format
+| Topic | Decision | Rationale |
+|-------|----------|-----------|
+| Route groups | Keep (app) group | Layout separation, extensibility |
+| Analytics | Vercel only at launch | Simpler; add Plausible post-launch |
+| Content structure | Directory-based | Better for co-located images |
 
-### Minor Gaps for Implementation
+### Full Review
 
-These don't need spec changes — they're standard implementation decisions:
-- Subscribe CTA visual treatment (follows site's established component patterns)
-- Mobile hamburger menu details (standard responsive pattern)
-- RSS full-content confirmed by auto-answer Q25
-- Print stylesheet (not needed for dark dev blog)
+Detailed 3-model comparison available in: `plans/site-setup/02-spec/spec-review.md`
 
 ---
 
