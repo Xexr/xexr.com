@@ -323,7 +323,7 @@ xexr.com/
 
 **File-based content is correct for now.** You're writing long-form posts, not publishing a high-frequency link blog. Git-backed MDX files give you version history, local editing in your IDE, and zero database costs. If you ever need a CMS layer, you can add Keystatic or Tina on top of the same file structure later.
 
-**App Router over Pages Router.** You're on Next.js 15, use the modern patterns. Server components for content pages, client components only where needed (interactive MDX components, Giscus, search).
+**App Router over Pages Router.** You're on Next.js 16, use the modern patterns. Server components for content pages, client components only where needed (interactive MDX components, Giscus, search).
 
 **No CMS to start.** Write MDX in your editor, commit, push, deploy. Adding a CMS is premature complexity.
 
