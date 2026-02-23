@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { formatDate } from "@/lib/content";
 import { generatePageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = generatePageMetadata({
@@ -29,7 +30,7 @@ export default function NowPage() {
     <article className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">Now</h1>
       <p className="text-muted-foreground mt-2 text-sm">
-        Last updated: {lastUpdated} ({relativeTime(lastUpdated)})
+        Last updated: {formatDate(lastUpdated)} ({relativeTime(lastUpdated)})
       </p>
       {stale && (
         <p className="text-muted-foreground/70 mt-1 text-xs italic">
