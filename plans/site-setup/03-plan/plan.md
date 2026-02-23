@@ -104,12 +104,14 @@ This approach was chosen because the codebase already has the right architectura
   - Remove: `geist`, `drizzle-orm`, `@libsql/client`, `drizzle-zod`, `drizzle-kit`, `@trpc/client`, `@trpc/server`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `next-themes`, `@ai-sdk/openai`, `@ai-sdk/google`, `ai`, `@upstash/ratelimit`, `@upstash/redis`, `sonner`, `@doublezero/sdk`
   - Add: `velite`, `rehype-pretty-code`, `shiki`, `@giscus/react`, `remark-gfm`
   - Update dev script: `"dev": "next dev --webpack --port 3005"` (Velite needs webpack)
-  - Update build script: ensure it uses `next build --webpack` (or update the existing `build:webpack`)
+  - Update build script: `"build": "next build --webpack"` (Velite requires webpack; plain Turbopack build will fail)
+  - Remove or alias the existing `build:webpack` script (now redundant since main `build` uses webpack)
   - Remove scripts: `db:start`, `db:generate`, `db:migrate`, `db:push`, `db:studio`, `db:seed`
 - **Acceptance criteria:**
   - [ ] `pnpm install` succeeds with no missing peer deps
   - [ ] All removed packages absent from `node_modules` (verified via `pnpm ls`)
   - [ ] New packages installed and importable
+  - [ ] `pnpm build` uses `--webpack` (not Turbopack) — Velite requires this
 - **Dependencies:** None
 
 **1.2 Clean environment variables**
@@ -162,11 +164,27 @@ This approach was chosen because the codebase already has the right architectura
   - Add body text colour variable: `--body-text: #a0a0a0`
   - Keep the `@theme inline` block mapping so Tailwind classes like `bg-background`, `text-foreground`, `text-accent` work
   - Update scrollbar styling to match dark palette
+  - Add heading letter-spacing: `-0.05em` (spec: "-1.5px in em units for zoom scaling")
+  - Add `@media (forced-colors: active)` rules for readability in Windows High Contrast mode (ensure text and interactive elements remain distinguishable)
+  - Add scanline overlay utility class:
+    ```css
+    .scanlines {
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px);
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+    }
+    ```
+    The scanline DOM element (with `aria-hidden="true"`) goes in root layout (task 1.5).
 - **Acceptance criteria:**
   - [ ] All colour tokens match spec values exactly
   - [ ] `text-accent` in Tailwind resolves to `#00ff88` by default
   - [ ] Font CSS variables reference new font families
   - [ ] No light-theme tokens remain
+  - [ ] Heading letter-spacing is `-0.05em`
+  - [ ] `@media (forced-colors: active)` rules present
+  - [ ] Scanline overlay CSS utility defined
 - **Dependencies:** None (parallel with 1.1, 1.2, 1.3)
 
 **1.5 Root layout rewrite**
@@ -189,6 +207,7 @@ This approach was chosen because the codebase already has the right architectura
   - Remove `<CustomThemeProvider>` wrapper — the `.dark` class is set statically on `<html>`
   - Delete `CustomThemeProvider.tsx` (or remove its contents and the `next-themes` import)
   - Delete `ThemeToggle` component if it exists as a separate file
+  - Add scanline overlay element in `<body>` (after skip-to-content, before content): `<div className="scanlines" aria-hidden="true" />` — uses CSS utility from 1.4
 - **Acceptance criteria:**
   - [ ] Page renders with Plus Jakarta Sans for body/headings and JetBrains Mono for code
   - [ ] `maximumScale: 1` removed (verify in rendered `<meta name="viewport">`)
@@ -197,6 +216,7 @@ This approach was chosen because the codebase already has the right architectura
   - [ ] Skip-to-content link visible on keyboard focus
   - [ ] No `next-themes` ThemeProvider in component tree
   - [ ] `geist` package no longer imported anywhere
+  - [ ] Scanline overlay element present with `aria-hidden="true"` and `pointer-events: none`
 - **Dependencies:** 1.1 (fonts installed), 1.4 (CSS vars reference new font names)
 
 **1.6 App layout cleanup**
@@ -282,6 +302,7 @@ This approach was chosen because the codebase already has the right architectura
   - Projects schema: `pattern: "content/projects/*.yaml"`, fields per spec
   - Books schema: `pattern: "content/bookshelf/*.yaml"`, fields per spec
   - Configure `rehype-pretty-code` with Shiki for syntax highlighting
+  - Configure a custom Shiki theme that maps string literal token colour to `var(--accent)` so code blocks reflect the active Vibe. All other token colours should remain theme-neutral (spec: "syntax highlighting independent of Vibe — accent used for string literals only")
   - Configure `remark-gfm` for GitHub Flavored Markdown
   - Output to `.velite/` directory
 - **Acceptance criteria:**
@@ -289,6 +310,7 @@ This approach was chosen because the codebase already has the right architectura
   - [ ] Generated types match spec Data Model
   - [ ] Seed post compiles without errors
   - [ ] Code blocks in seed post have syntax highlighting
+  - [ ] String literals in code blocks render in `var(--accent)` colour; other tokens are theme-neutral
 - **Dependencies:** Phase 1 complete
 
 **2.2 Content helper module**
@@ -529,6 +551,7 @@ This approach was chosen because the codebase already has the right architectura
   - Tab sync: `StorageEvent` listener updates UI if another tab changes colour
   - Close via: backdrop/Escape/close button/re-click pill
   - Focus trap, keyboard accessible: Tab to presets, Arrow keys to navigate, Escape to close
+  - Reset to default: re-selecting the Mint preset (or a dedicated Reset button) returns colour to `DEFAULT_ACCENT` (#00ff88) and clears/resets localStorage
   - `data-slot="vibe-drawer"`
 - **Acceptance criteria:**
   - [ ] 8 preset buttons render with correct swatches and names
@@ -538,6 +561,7 @@ This approach was chosen because the codebase already has the right architectura
   - [ ] Tab sync works (change in one tab reflects in another)
   - [ ] Keyboard fully navigable (Tab, Arrow, Escape)
   - [ ] WCAG AA contrast enforced (low-contrast colours rejected or warned)
+  - [ ] Reset to default mint is available (re-selecting Mint preset or dedicated reset action)
 - **Dependencies:** 2.3 (vibe utilities), 3.5 (StatusBar triggers drawer)
 
 **3.7 Vibe blocking script**
@@ -967,31 +991,51 @@ This approach was chosen because the codebase already has the right architectura
   - Verify `<time datetime="...">` on all dates
   - Verify all body links have underline decoration (not colour-only)
   - Verify `pointer-events: none` on scanline overlay
+  - Verify `@media (forced-colors: active)` rules produce readable output
   - Run automated accessibility check (axe-core or similar)
 - **Acceptance criteria:**
   - [ ] All WCAG AA requirements from spec verified
   - [ ] No critical accessibility violations from automated scanning
   - [ ] Keyboard-only navigation works for all interactive features
+  - [ ] Forced-colors mode renders readable content
 - **Dependencies:** All phases (audit runs on complete site)
 
 **5.9 Sample content and final cleanup**
-- **What:** Create real seed content, clean up unused files, update README
+- **What:** Create real seed content, clean up unused files, restyle error page, update README
 - **Files:**
   - Modify: `content/posts/hello-world/index.mdx` — flesh out into a real first post
   - Create: `content/projects/gas-town.yaml` (or similar real project) — seed project
+  - Modify: `src/app/error.tsx` — restyle to match new dark palette and accent colours
   - Modify: `README.md` — remove references to `pnpm db:start`, `pnpm db:studio`; update to reflect blog architecture
   - Delete: any unused files from template (check for orphaned tRPC files, unused provider files)
 - **Key details:**
   - First post should exercise all MDX features: headings, code blocks, callout, image, links
   - Project data should be real (at least 1 project with all fields)
+  - Restyle `error.tsx`: update Card styling to match new dark palette (#050505 background, accent colours), keep the existing error/reset pattern
   - Verify all removed packages have no remaining imports in source (`grep` for package names)
   - Update README with correct setup instructions
 - **Acceptance criteria:**
   - [ ] First post renders correctly with all MDX features
   - [ ] At least 1 project displays on `/projects`
+  - [ ] Error page (`error.tsx`) renders with correct dark palette and accent styling
   - [ ] No references to removed packages in source code
   - [ ] README reflects actual project architecture
 - **Dependencies:** All phases complete
+
+**5.10 Dead link checking in CI**
+- **What:** Set up automated dead link detection
+- **Files:**
+  - Create: `.github/workflows/links.yml` (or add to existing CI) — dead link checker
+- **Key details:**
+  - Install `lychee` (or similar tool) as a CI step
+  - Run against built site output to catch broken internal and external links
+  - Can run as a GitHub Action on push/PR
+  - Exclude known-dynamic URLs (e.g., `localhost`, placeholder domains)
+- **Acceptance criteria:**
+  - [ ] Dead link check runs in CI
+  - [ ] Broken links fail the check (non-zero exit code)
+  - [ ] No false positives on known-good URLs
+- **Dependencies:** 5.9 (content exists to check)
 
 #### Phase 5 Exit Criteria
 - [ ] `/sitemap.xml` and `/robots.txt` are correct
@@ -1004,6 +1048,7 @@ This approach was chosen because the codebase already has the right architectura
 - [ ] `pnpm build:webpack` succeeds end-to-end
 - [ ] `pnpm typecheck` passes
 - [ ] `pnpm lint` passes
+- [ ] Lighthouse score 90+ on Performance, Accessibility, Best Practices, SEO
 
 ---
 
