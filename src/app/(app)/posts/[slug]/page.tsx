@@ -117,7 +117,7 @@ export default async function PostPage({ params }: PageProps) {
             {/* Tags */}
             {post.tags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {post.tags.map((tag) => (
+                {post.tags.map((tag: string) => (
                   <Link
                     key={tag}
                     href={`/posts?tag=${encodeURIComponent(tag)}` as Route}

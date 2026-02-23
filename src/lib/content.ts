@@ -6,8 +6,8 @@ export type Post = (typeof posts)[number];
 
 /** All published posts, sorted by date descending. Drafts excluded in production. */
 export const allPosts: Post[] = posts
-  .filter((p) => (process.env.NODE_ENV === "production" ? !p.draft : true))
-  .sort((a, b) => b.date.localeCompare(a.date));
+  .filter((p: Post) => (process.env.NODE_ENV === "production" ? !p.draft : true))
+  .sort((a: Post, b: Post) => b.date.localeCompare(a.date));
 
 /** Featured posts (subset of allPosts). */
 export const featuredPosts: Post[] = allPosts.filter((p) => p.featured);
@@ -50,8 +50,8 @@ export const allProjects: Project[] = [...projects].sort((a, b) => {
 export type Book = (typeof books)[number];
 
 /** All books, sorted: currently reading first, then by title. */
-export const allBooks: Book[] = [...books].sort((a, b) => {
-  const statusOrder = { reading: 0, finished: 1, "want-to-read": 2 };
+export const allBooks: Book[] = [...books].sort((a: Book, b: Book) => {
+  const statusOrder: Record<Book["status"], number> = { reading: 0, finished: 1, "want-to-read": 2 };
   const diff = statusOrder[a.status] - statusOrder[b.status];
   if (diff !== 0) return diff;
   return a.title.localeCompare(b.title);

@@ -38,7 +38,7 @@ export default function PostCard({ post }: { post: Post }) {
 
       {post.tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
-          {visibleTags.map((tag) => (
+          {visibleTags.map((tag: string) => (
             <Badge key={tag} variant="secondary" className="text-[0.65rem]">
               {tag}
             </Badge>

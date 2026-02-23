@@ -34,7 +34,7 @@ const statusConfig: Record<
 };
 
 function ProjectRow({ project }: { project: Project }) {
-  const status = statusConfig[project.status];
+  const status = statusConfig[project.status] ?? statusConfig.active;
 
   return (
     <div className="group relative rounded-lg border border-transparent px-4 py-4 transition-colors hover:border-border">
@@ -76,7 +76,7 @@ function ProjectRow({ project }: { project: Project }) {
           {/* Tech stack badges */}
           {project.techStack.length > 0 && (
             <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {project.techStack.map((tech) => (
+              {project.techStack.map((tech: string) => (
                 <Badge
                   key={tech}
                   variant="secondary"
@@ -91,7 +91,7 @@ function ProjectRow({ project }: { project: Project }) {
           {/* Tags — link to /posts?tag=X for cross-discovery */}
           {project.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {project.tags.map((tag) => (
+              {project.tags.map((tag: string) => (
                 <Link
                   key={tag}
                   href={`/posts?tag=${encodeURIComponent(tag)}` as Route}
