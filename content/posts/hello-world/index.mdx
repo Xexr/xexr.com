@@ -39,6 +39,10 @@ const stack = {
 
 Content lives as MDX files in the repository. No database, no CMS. `git push` deploys.
 
+<Callout variant="tip">
+MDX lets you use React components directly in your Markdown. This site registers custom components like `Callout` and `MDXImage` — no imports needed in the post itself.
+</Callout>
+
 > The best publishing system is the one that gets out of your way. For me, that means files in a repo.
 
 ### Directory structure
@@ -58,6 +62,8 @@ content/
 ```
 
 Each post directory can hold images, diagrams, and supplementary files alongside the MDX content. No separate asset pipeline needed.
+
+<MDXImage src="/logo.webp" alt="xexr.com logo" caption="The site logo, rendered with the MDXImage component" width={800} height={450} />
 
 ### The authoring flow
 
