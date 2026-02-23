@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ReturnToTop from "./ReturnToTop";
 import StatusBar from "./StatusBar";
 import VibeDrawer from "./VibeDrawer";
 
@@ -10,6 +11,7 @@ export default function VibeShell() {
 
   return (
     <>
+      <ReturnToTop />
       <StatusBar
         onVibeClick={() => setVibeDrawerOpen(true)}
         buttonRef={vibeButtonRef}
