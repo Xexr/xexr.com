@@ -91,6 +91,7 @@ const posts = defineCollection({
       image: s.string().optional(),
       readingTime: s.number().optional(),
       body: s.mdx(),
+      content: s.markdown(),
       meta: s.metadata(),
       filePath: s.path(),
     })
