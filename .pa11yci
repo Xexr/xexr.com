@@ -1,0 +1,16 @@
+{
+  "defaults": {
+    "timeout": 30000,
+    "wait": 1000,
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox"]
+    }
+  },
+  "urls": [
+    "http://localhost:3000/",
+    "http://localhost:3000/about",
+    "http://localhost:3000/now",
+    "http://localhost:3000/posts",
+    "http://localhost:3000/projects"
+  ]
+}

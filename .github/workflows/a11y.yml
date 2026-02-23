@@ -1,0 +1,39 @@
+name: Accessibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Run accessibility scan
+        run: |
+          pnpm next start --port 3000 &
+          SERVER_PID=$!
+          # Wait for server to be ready
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          pnpm pa11y-ci
+          EXIT_CODE=$?
+          kill $SERVER_PID 2>/dev/null || true
+          exit $EXIT_CODE

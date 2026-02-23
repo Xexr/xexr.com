@@ -13,7 +13,8 @@
     "test:unit": "vitest run",
     "test:integration": "vitest run -c vitest.config.integration.ts --passWithNoTests",
     "test:e2e": "vitest run -c vitest.config.e2e.ts --passWithNoTests",
-    "test:coverage": "vitest run -c vitest.config.coverage.ts"
+    "test:coverage": "vitest run -c vitest.config.coverage.ts",
+    "test:a11y": "pa11y-ci"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -49,6 +50,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "16.0.10",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "pa11y-ci": "^4.0.1",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
