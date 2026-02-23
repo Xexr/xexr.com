@@ -33,7 +33,8 @@ export const siteConfig = {
     creator: "@danepoyzer",
   },
   twitterHandle: "@danepoyzer",
-  githubUrl: "https://github.com/xexr",
+  githubUrl: "https://github.com/Xexr",
+  twitterUrl: "https://x.com/danepoyzer",
   substackUrl: "https://xexr.substack.com",
 
   // SEO
