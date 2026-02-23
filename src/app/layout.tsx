@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { metadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
+import Footer from "./_components/Footer";
 import VibeShell from "./_components/VibeShell";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -65,6 +66,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <NuqsAdapter>{children}</NuqsAdapter>
+        <Footer />
         <VibeShell />
         <Analytics />
         <div className="scanlines" aria-hidden="true" />

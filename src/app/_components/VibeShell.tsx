@@ -1,15 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import StatusBar from "./StatusBar";
+import VibeDrawer from "./VibeDrawer";
 
 export default function VibeShell() {
-  const [, setVibeDrawerOpen] = useState(false);
+  const [vibeDrawerOpen, setVibeDrawerOpen] = useState(false);
+  const vibeButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
-      <StatusBar onVibeClick={() => setVibeDrawerOpen(true)} />
-      {/* VibeDrawer will be added here by xr-lfk.3.6 */}
+      <StatusBar
+        onVibeClick={() => setVibeDrawerOpen(true)}
+        buttonRef={vibeButtonRef}
+      />
+      <VibeDrawer
+        open={vibeDrawerOpen}
+        onOpenChange={setVibeDrawerOpen}
+        anchorRef={vibeButtonRef}
+      />
     </>
   );
 }

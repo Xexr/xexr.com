@@ -48,11 +48,11 @@ export const siteConfig = {
 
   // Schema.org topics
   topics: [
-    "Primary Topic",
-    "Secondary Topic",
-    "Topic Category 1",
-    "Topic Category 2",
-    "Topic Category 3",
-    "Topic Category 4",
+    "Software Engineering",
+    "Artificial Intelligence",
+    "Building in Public",
+    "Developer Tools",
+    "AI Orchestration",
+    "Indie Hacking",
   ],
 };
