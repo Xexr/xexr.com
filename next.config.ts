@@ -7,7 +7,10 @@ if (!process.env.VELITE_STARTED && (isDev || isBuild)) {
   process.env.VELITE_STARTED = "1";
   import("velite")
     .then((m) => m.build({ watch: isDev, clean: !isDev }))
-    .catch((_e: unknown) => undefined);
+    .catch((e: unknown) => {
+      console.error("Velite build failed:", e);
+      process.exit(1);
+    });
 }
 
 const config: NextConfig = {
