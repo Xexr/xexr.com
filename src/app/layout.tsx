@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { siteConfig } from "@/lib/siteConfig";
 import { metadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
+import VibeShell from "./_components/VibeShell";
 
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -48,6 +49,7 @@ export default function RootLayout({
       </head>
       <body className="bg-background text-foreground flex min-h-screen flex-col font-sans">
           {children}
+          <VibeShell />
           <Analytics />
       </body>
     </html>

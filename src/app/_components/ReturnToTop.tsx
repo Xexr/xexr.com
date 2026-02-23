@@ -34,7 +34,7 @@ export default function ReturnToTop() {
 
   return (
     <Button
-      className="fixed bottom-4 right-4 z-50 rounded-full bg-primary p-2 text-primary-foreground hover:bg-primary/90"
+      className="fixed bottom-16 right-4 z-50 rounded-full bg-accent/10 p-2 text-accent hover:bg-accent/20"
       onClick={scrollToTop}
       aria-label="Return to top"
     >
