@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
-import { Github, Mail, ExternalLink } from "lucide-react";
+import { Github, Mail, ExternalLink, ArrowRight } from "lucide-react";
 import { generatePageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/siteConfig";
 
@@ -88,7 +88,7 @@ export default function AboutPage() {
             className="bg-primary text-primary-foreground inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
           >
             See what I&apos;ve built
-            <ExternalLink className="size-4" />
+            <ArrowRight className="size-4" />
           </Link>
           <Link
             href={"/posts" as Route}

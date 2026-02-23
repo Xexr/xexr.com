@@ -15,7 +15,7 @@ function stripMdxComponents(html: string): string {
   return html
     .replace(/<CodeBlock[^>]*>([\s\S]*?)<\/CodeBlock>/gi, "$1")
     .replace(/<Callout[^>]*>([\s\S]*?)<\/Callout>/gi, "$1")
-    .replace(/<MDXImage[^>]*\/>/gi, "");
+    .replace(/<MDXImage[^>]*(?:\/>|>[\s\S]*?<\/MDXImage>)/gi, "");
 }
 
 function toRfc822(dateStr: string): string {
