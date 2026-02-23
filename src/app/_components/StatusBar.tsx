@@ -5,11 +5,17 @@ import { loadVibeColour } from "@/lib/vibe";
 
 const FIRST_VISIT_KEY = "xexr-statusbar-seen";
 
-// --- accent store (syncs with localStorage) ---
+// --- accent store (syncs with localStorage + same-tab vibe changes) ---
+
+const VIBE_CHANGE_EVENT = "vibe-change";
 
 function subscribeAccent(cb: () => void) {
   window.addEventListener("storage", cb);
-  return () => window.removeEventListener("storage", cb);
+  window.addEventListener(VIBE_CHANGE_EVENT, cb);
+  return () => {
+    window.removeEventListener("storage", cb);
+    window.removeEventListener(VIBE_CHANGE_EVENT, cb);
+  };
 }
 
 // --- pulse store (one-shot first-visit check) ---
