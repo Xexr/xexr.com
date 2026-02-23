@@ -16,6 +16,9 @@
 /out/
 next-env.d.ts
 
+# velite
+.velite/
+
 # production
 /build
 

@@ -1,0 +1,75 @@
+---
+title: "Building in Public: Why I Started Writing"
+description: "First post on xexr.com — why I'm writing, what I plan to cover, and how this site was built with Next.js, MDX, and Velite."
+date: "2026-02-23"
+tags: ["meta", "writing", "nextjs"]
+draft: false
+featured: true
+---
+
+## Why write?
+
+I've spent years building things — from accountancy practice automation to indie SaaS products to multi-agent AI systems. Along the way, I've accumulated notebooks full of hard-won lessons that never made it past my local machine.
+
+This site is the fix. A place to think out loud, share what I've learned, and connect the dots between the things I'm building.
+
+## What to expect
+
+I plan to write about:
+
+- **Engineering** — the tools, patterns, and architectures I reach for
+- **Building products** — the decisions that matter when shipping solo
+- **AI agents** — practical experience running autonomous systems in production
+
+Not every post will be polished. Some will be rough notes from the workshop floor. That's the point.
+
+## How this site works
+
+The stack is intentionally simple:
+
+```typescript
+const stack = {
+  framework: "Next.js 16",
+  content: "MDX + Velite",
+  styling: "Tailwind CSS 4",
+  hosting: "Vercel",
+  comments: "Giscus",
+};
+```
+
+Content lives as MDX files in the repository. No database, no CMS. `git push` deploys.
+
+> The best publishing system is the one that gets out of your way. For me, that means files in a repo.
+
+### Directory structure
+
+Posts are organised as directories with co-located assets:
+
+```
+content/
+  posts/
+    hello-world/
+      index.mdx      ← this file
+      diagram.png     ← co-located images
+  projects/
+    gas-town.yaml     ← project data
+  bookshelf/
+    .gitkeep
+```
+
+Each post directory can hold images, diagrams, and supplementary files alongside the MDX content. No separate asset pipeline needed.
+
+### The authoring flow
+
+1. Write MDX with frontmatter
+2. Drop images in the post directory
+3. Commit and push
+4. Vercel builds and deploys
+
+That's it. No build step to remember, no deploy button to click.
+
+## What's next
+
+I have a backlog of topics I want to cover. First up will likely be something on [multi-agent orchestration](/posts/hello-world) — the system that built parts of this very site.
+
+If any of this sounds interesting, stick around. There's more coming.

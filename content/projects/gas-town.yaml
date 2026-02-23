@@ -1,0 +1,20 @@
+name: Gas Town
+description: >-
+  Multi-agent workspace manager that orchestrates autonomous AI workers across
+  Git repositories. Agents claim issues, implement solutions in isolated
+  worktrees, and submit work through automated merge queues.
+url: https://github.com/xexr/gastown
+repo: https://github.com/xexr/gastown
+techStack:
+  - Go
+  - Dolt
+  - Git
+  - tmux
+  - Claude Code
+status: active
+featured: true
+tags:
+  - ai-agents
+  - automation
+  - devtools
+  - go
