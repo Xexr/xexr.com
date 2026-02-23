@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 import {
   VIBE_PRESETS,
   DEFAULT_ACCENT,
+  STORAGE_KEY,
   loadVibeColour,
   saveVibeColour,
-  deriveAccentVars,
   meetsContrastAA,
   oklchToHex,
   hexToOklch,
@@ -26,13 +26,19 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Apply accent + derived vars to :root */
+const VIBE_CHANGE_EVENT = "vibe-change";
+
+/** Apply accent colour to :root — only sets --accent so CSS color-mix() formulas derive the rest */
 function applyAccent(hex: string) {
-  const vars = deriveAccentVars(hex);
   const el = document.documentElement;
-  for (const [k, v] of Object.entries(vars)) {
-    el.style.setProperty(k, v);
-  }
+  el.style.setProperty("--accent", hex);
+  // Keep related vars in sync so Tailwind classes using these tokens update
+  el.style.setProperty("--primary", hex);
+  el.style.setProperty("--ring", hex);
+  el.style.setProperty("--chart-1", hex);
+  el.style.setProperty("--sidebar-primary", hex);
+  el.style.setProperty("--sidebar-accent", hex);
+  el.style.setProperty("--sidebar-ring", hex);
 }
 
 /** Generate a spectrum of hues at fixed lightness/chroma for the slider track */
@@ -48,12 +54,16 @@ function buildSpectrumGradient(): string {
 const SPECTRUM_GRADIENT = buildSpectrumGradient();
 
 // ---------------------------------------------------------------------------
-// External-store hook for accent colour (syncs across tabs)
+// External-store hook for accent colour (syncs across tabs + same tab)
 // ---------------------------------------------------------------------------
 
 function subscribeAccent(cb: () => void) {
   window.addEventListener("storage", cb);
-  return () => window.removeEventListener("storage", cb);
+  window.addEventListener(VIBE_CHANGE_EVENT, cb);
+  return () => {
+    window.removeEventListener("storage", cb);
+    window.removeEventListener(VIBE_CHANGE_EVENT, cb);
+  };
 }
 
 function useAccent() {
@@ -86,10 +96,12 @@ function DrawerContent({
   accent,
   onSelect,
   onClose,
+  onPresetKeyDown,
 }: {
   accent: string;
   onSelect: (hex: string, animate: boolean) => void;
   onClose: () => void;
+  onPresetKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }) {
   const sliderRef = useRef<HTMLInputElement>(null);
   const [contrastWarning, setContrastWarning] = useState<string | null>(null);
@@ -100,7 +112,7 @@ function DrawerContent({
   const handlePresetClick = useCallback(
     (hex: string) => {
       if (!meetsContrastAA(hex)) {
-        setContrastWarning(`${hex} fails WCAG AA contrast — snapping to nearest safe colour`);
+        setContrastWarning(`${hex} does not meet WCAG AA contrast requirements`);
         return;
       }
       setContrastWarning(null);
@@ -116,11 +128,14 @@ function DrawerContent({
       let hex = oklchToHex(l, c, hue);
 
       if (!meetsContrastAA(hex)) {
-        // Nudge lightness up until it passes
         let testL = l;
         while (!meetsContrastAA(hex) && testL < 0.95) {
           testL += 0.02;
           hex = oklchToHex(testL, c, hue);
+        }
+        if (!meetsContrastAA(hex)) {
+          setContrastWarning("No accessible colour found at this hue");
+          return;
         }
         setContrastWarning("Adjusted for WCAG AA contrast");
       } else {
@@ -154,6 +169,7 @@ function DrawerContent({
         className="grid grid-cols-4 gap-2"
         role="radiogroup"
         aria-label="Colour presets"
+        onKeyDown={onPresetKeyDown}
       >
         {VIBE_PRESETS.map((preset) => {
           const isActive = accent.toLowerCase() === preset.hex.toLowerCase();
@@ -257,9 +273,16 @@ export default function VibeDrawer({
   const accent = useAccent();
   const isDesktop = useIsDesktop();
 
+  // Apply stored accent on mount so colours persist across page reloads
+  useEffect(() => {
+    const stored = loadVibeColour();
+    if (stored !== DEFAULT_ACCENT) {
+      applyAccent(stored);
+    }
+  }, []);
+
   const handleSelect = useCallback(
     (hex: string, animate: boolean) => {
-      // Set transition speed based on interaction type
       const el = document.documentElement;
       if (animate) {
         el.style.setProperty(
@@ -272,6 +295,8 @@ export default function VibeDrawer({
 
       applyAccent(hex);
       saveVibeColour(hex);
+      // Notify same-tab subscribers (StorageEvent only fires in other tabs)
+      window.dispatchEvent(new Event(VIBE_CHANGE_EVENT));
     },
     [],
   );
@@ -280,10 +305,10 @@ export default function VibeDrawer({
     onOpenChange(false);
   }, [onOpenChange]);
 
-  // Tab sync: listen for storage events to update CSS vars
+  // Tab sync: listen for storage events to update CSS vars from other tabs
   useEffect(() => {
     function onStorage(e: StorageEvent) {
-      if (e.key === "xexr-vibe" && e.newValue) {
+      if (e.key === STORAGE_KEY && e.newValue) {
         applyAccent(e.newValue);
       }
     }
@@ -320,13 +345,12 @@ export default function VibeDrawer({
   );
 
   const content = (
-    <div onKeyDown={handlePresetKeyDown} role="presentation">
-      <DrawerContent
-        accent={accent}
-        onSelect={handleSelect}
-        onClose={handleClose}
-      />
-    </div>
+    <DrawerContent
+      accent={accent}
+      onSelect={handleSelect}
+      onClose={handleClose}
+      onPresetKeyDown={handlePresetKeyDown}
+    />
   );
 
   // ---- Mobile: Dialog bottom sheet ----
