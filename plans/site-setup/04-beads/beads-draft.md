@@ -3,6 +3,13 @@
 **Generated:** 2026-02-23
 **Source:** plans/site-setup/03-plan/plan.md
 **Plan review status:** Reviewed (all P0/P1/P2 findings resolved)
+**Post-review consolidation:** 9 beads merged → 30 open task beads (was 39)
+
+> **Note:** This draft reflects the original 1:1 plan-to-bead mapping. After review,
+> beads were consolidated to reduce execution units. Merged issues are marked
+> with `[MERGED → target]`. The beads database is the source of truth for
+> current descriptions and acceptance criteria. See `beads-report.md` for the
+> current state.
 
 ---
 
@@ -23,14 +30,14 @@
 **Parent:** Feature epic
 **Description:** Strip template defaults, install correct dependencies, establish the visual and configuration foundation that all subsequent phases build on.
 
-#### Issue: Clean package.json dependencies (1.1)
+#### Issue: Foundation config cleanup (1.1) [CONSOLIDATED: absorbed 1.2, 1.3]
 
 **Type:** task
 **Priority:** P1
 **Parent:** Phase 1
 **Dependencies:** None
 **Description:**
-Remove unused template dependencies and add blog-specific packages.
+Remove unused template dependencies, strip database/AI env vars, and update site configuration with real data. See beads database for current merged description.
 
 **Files:**
 - Modify: `package.json`
@@ -49,7 +56,7 @@ Remove unused template dependencies and add blog-specific packages.
 - [ ] New packages installed and importable
 - [ ] `pnpm build` succeeds with Turbopack (default) — Velite runs via config integration
 
-#### Issue: Clean environment variables (1.2)
+#### ~~Issue: Clean environment variables (1.2)~~ [MERGED → 1.1]
 
 **Type:** task
 **Priority:** P1
@@ -72,7 +79,7 @@ Strip database/AI/Redis env vars that block builds, add Giscus config.
 - [ ] Build succeeds without any database/AI/Redis environment variables set
 - [ ] Giscus vars are optional and don't block builds
 
-#### Issue: Update site configuration (1.3)
+#### ~~Issue: Update site configuration (1.3)~~ [MERGED → 1.1]
 
 **Type:** task
 **Priority:** P1
@@ -136,14 +143,14 @@ Replace OKLCh colour tokens with spec palette, add Vibe CSS variables, update fo
 - [ ] `@media (forced-colors: active)` rules present
 - [ ] Scanline overlay CSS utility defined
 
-#### Issue: Root layout rewrite (1.5)
+#### Issue: Root layout rewrite (1.5) [CONSOLIDATED: absorbed 3.7]
 
 **Type:** task
 **Priority:** P1
 **Parent:** Phase 1
-**Dependencies:** Task 1.1 (Clean package.json dependencies), Task 1.4 (CSS token migration)
+**Dependencies:** Task 1.1, Task 1.4, Task 1.7
 **Description:**
-Font migration, viewport fix, JSON-LD update, darkreader meta, skip-to-content link, remove CustomThemeProvider wrapper.
+Font migration, viewport fix, JSON-LD update, darkreader meta, skip-to-content link, remove CustomThemeProvider wrapper, and inject Vibe blocking script. See beads database for current merged description.
 
 **Files:**
 - Modify: `src/app/layout.tsx`
@@ -173,7 +180,7 @@ Font migration, viewport fix, JSON-LD update, darkreader meta, skip-to-content l
 - [ ] `geist` package no longer imported anywhere
 - [ ] Scanline overlay element present with `aria-hidden="true"` and `pointer-events: none`
 
-#### Issue: App layout cleanup (1.6)
+#### ~~Issue: App layout cleanup (1.6)~~ [MERGED → 1.7]
 
 **Type:** task
 **Priority:** P1
@@ -197,14 +204,14 @@ Remove tRPC provider, Toaster, add `id="main-content"`.
 - [ ] `<main id="main-content">` present in rendered HTML
 - [ ] `NuqsAdapter` still wraps content
 
-#### Issue: Next.js config updates (1.7)
+#### Issue: Next.js config and app layout cleanup (1.7) [CONSOLIDATED: absorbed 1.6]
 
 **Type:** task
 **Priority:** P1
 **Parent:** Phase 1
-**Dependencies:** Task 1.1 (Clean package.json dependencies)
+**Dependencies:** Task 1.1
 **Description:**
-Add config-based Velite integration, CSP headers skeleton, keep existing config.
+Add config-based Velite integration, CSP headers, and clean up app layout by removing tRPC/Toaster wrappers. See beads database for current merged description.
 
 **Files:**
 - Modify: `next.config.ts`
@@ -225,14 +232,14 @@ Add config-based Velite integration, CSP headers skeleton, keep existing config.
 - [ ] CSP header present in response
 - [ ] Existing config preserved (typed routes, image patterns)
 
-#### Issue: Content directory structure (1.8)
+#### Issue: Content initialization (1.8) [CONSOLIDATED: absorbed 5.9]
 
 **Type:** task
 **Priority:** P1
 **Parent:** Phase 1
 **Dependencies:** None
 **Description:**
-Create the content directories and a seed post for pipeline testing.
+Create content directories, seed post, sample project data, restyle error page, and update README. See beads database for current merged description.
 
 **Files:**
 - Create: `content/posts/hello-world/index.mdx`
@@ -258,14 +265,14 @@ Create the content directories and a seed post for pipeline testing.
 **Parent:** Feature epic
 **Description:** Build the Velite content pipeline, shared utility modules, and MDX custom components that all page routes depend on. Requires Phase 1 — Velite installed, config-based integration working, content directory created.
 
-#### Issue: Velite configuration (2.1)
+#### Issue: Content pipeline (2.1) [CONSOLIDATED: absorbed 2.2]
 
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 2
-**Dependencies:** Task 1.1 (Clean package.json dependencies), Task 1.7 (Next.js config updates), Task 1.8 (Content directory structure)
+**Dependencies:** Task 1.1, Task 1.7, Task 1.8
 **Description:**
-Create Velite config with Post, Project, and Book collection schemas.
+Create Velite configuration with collection schemas and content helper module with query functions. See beads database for current merged description.
 
 **Files:**
 - Create: `velite.config.ts`
@@ -289,7 +296,7 @@ Create Velite config with Post, Project, and Book collection schemas.
 - [ ] Code blocks in seed post have syntax highlighting
 - [ ] String literals in code blocks render in `var(--accent)` colour; other tokens are theme-neutral
 
-#### Issue: Content helper module (2.2)
+#### ~~Issue: Content helper module (2.2)~~ [MERGED → 2.1]
 
 **Type:** task
 **Priority:** P2
@@ -436,14 +443,14 @@ Create site footer with branding, navigation, social links.
 - [ ] Links use accent underline decoration
 - [ ] RSS icon present and links to feed
 
-#### Issue: Header redesign (3.2)
+#### Issue: Desktop navigation (3.2) [CONSOLIDATED: absorbed 3.3]
 
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 3
 **Dependencies:** None
 **Description:**
-New logo, remove ThemeToggle, prepare for mobile nav.
+Redesign header with new logo and build desktop navigation with active state styling. See beads database for current merged description.
 
 **Files:**
 - Modify: `src/app/_components/Header.tsx`
@@ -462,7 +469,7 @@ New logo, remove ThemeToggle, prepare for mobile nav.
 - [ ] Desktop shows inline nav links
 - [ ] Mobile shows hamburger icon
 
-#### Issue: MainNav update (3.3)
+#### ~~Issue: MainNav update (3.3)~~ [MERGED → 3.2]
 
 **Type:** task
 **Priority:** P2
@@ -491,7 +498,7 @@ Populate nav items, update active state styling, apply JetBrains Mono.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 3
-**Dependencies:** Task 3.2 (Header redesign), Task 3.3 (MainNav update)
+**Dependencies:** Task 3.2 (Desktop navigation)
 **Description:**
 Hamburger-triggered full-screen or slide-out mobile nav.
 
@@ -513,14 +520,14 @@ Hamburger-triggered full-screen or slide-out mobile nav.
 - [ ] Focus trapped inside drawer when open
 - [ ] Escape key closes drawer
 
-#### Issue: StatusBar component (3.5)
+#### Issue: StatusBar and ReturnToTop (3.5) [CONSOLIDATED: absorbed 3.9]
 
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 3
 **Dependencies:** Task 2.3 (Vibe colour utilities)
 **Description:**
-Fixed bottom bar with Vibe pill.
+Create fixed bottom StatusBar with Vibe pill, and reposition ReturnToTop to clear it. See beads database for current merged description.
 
 **Files:**
 - Create: `src/app/_components/StatusBar.tsx` (`"use client"`)
@@ -577,7 +584,7 @@ Colour picker with 8 presets + continuous spectrum slider.
 - [ ] WCAG AA contrast enforced
 - [ ] Reset to default mint is available
 
-#### Issue: Vibe blocking script (3.7)
+#### ~~Issue: Vibe blocking script (3.7)~~ [MERGED → 1.5]
 
 **Type:** task
 **Priority:** P2
@@ -636,7 +643,7 @@ Atmospheric particle background in hero section.
 - [ ] No errors when canvas is unavailable
 - [ ] `aria-hidden="true"` on canvas
 
-#### Issue: ReturnToTop repositioning (3.9)
+#### ~~Issue: ReturnToTop repositioning (3.9)~~ [MERGED → 3.5]
 
 **Type:** task
 **Priority:** P2
@@ -671,7 +678,7 @@ Adjust ReturnToTop to clear the new StatusBar.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 4
-**Dependencies:** Task 2.2 (Content helper module), Task 3.8 (Particle canvas), Task 4.2 (PostCard and PostList components)
+**Dependencies:** Task 2.1 (Content pipeline), Task 3.8 (Particle canvas), Task 4.2 (Blog listing)
 **Description:**
 Hero section with particles + featured posts below.
 
@@ -692,14 +699,14 @@ Hero section with particles + featured posts below.
 - [ ] Quick links present and functional
 - [ ] Page is a server component (no "use client")
 
-#### Issue: PostCard and PostList components (4.2)
+#### Issue: Blog listing (4.2) [CONSOLIDATED: absorbed 4.3]
 
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 4
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
-Reusable post display components for homepage and blog index.
+Build PostCard/PostList components and the /posts index page. See beads database for current merged description.
 
 **Files:**
 - Create: `src/app/_components/PostCard.tsx` (server component)
@@ -717,7 +724,7 @@ Reusable post display components for homepage and blog index.
 - [ ] Empty state shows when no posts match filter
 - [ ] URL reflects current state (`/posts?tag=ai&page=2`)
 
-#### Issue: Blog index page (4.3)
+#### ~~Issue: Blog index page (4.3)~~ [MERGED → 4.2]
 
 **Type:** task
 **Priority:** P2
@@ -746,7 +753,7 @@ Reusable post display components for homepage and blog index.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 4
-**Dependencies:** Task 2.2 (Content helper module), Task 2.4 (Extend metadata helpers), Task 2.5 (MDX components)
+**Dependencies:** Task 2.1 (Content pipeline), Task 2.4 (Extend metadata helpers), Task 2.5 (MDX components)
 **Description:**
 Individual post page — the core reading experience (primary design focus).
 
@@ -781,14 +788,14 @@ Individual post page — the core reading experience (primary design focus).
 - [ ] `generateStaticParams` generates all post slugs
 - [ ] 404 returned for non-existent slugs
 
-#### Issue: About page (4.5)
+#### Issue: Static content pages (4.5) [CONSOLIDATED: absorbed 4.7]
 
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 4
 **Dependencies:** None
 **Description:**
-Narrative about page with structured CTAs.
+Create the About and Now pages — both hardcoded JSX narrative pages. See beads database for current merged description.
 
 **Files:**
 - Create: `src/app/(app)/about/page.tsx` (server component)
@@ -812,7 +819,7 @@ Narrative about page with structured CTAs.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 4
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
 Stacked list of projects with status badges.
 
@@ -832,7 +839,7 @@ Stacked list of projects with status badges.
 - [ ] Tech stack renders as badge pills
 - [ ] External links open in new tab
 
-#### Issue: Now page (4.7)
+#### ~~Issue: Now page (4.7)~~ [MERGED → 4.5]
 
 **Type:** task
 **Priority:** P2
@@ -869,7 +876,7 @@ Ephemeral "now" page with staleness indicator.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
 Generate sitemap from Velite collections instead of static array.
 
@@ -912,7 +919,7 @@ Remove irrelevant disallow rules.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
 Enhanced 404 with recovery paths and recent posts.
 
@@ -960,7 +967,7 @@ Update OG image generation to match site branding.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
 Full-content RSS feed.
 
@@ -1012,7 +1019,7 @@ Test colour manipulation, localStorage, contrast checking.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 2.2 (Content helper module)
+**Dependencies:** Task 2.1 (Content pipeline)
 **Description:**
 Test content query functions.
 
@@ -1037,7 +1044,7 @@ Test content query functions.
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 4.4 (Post page), Task 5.6 (Unit tests for vibe utilities), Task 5.7 (Unit tests for content helpers), Task 5.9 (Sample content and final cleanup)
+**Dependencies:** Task 4.4 (Post page), Task 5.6 (Unit tests for vibe utilities), Task 5.7 (Unit tests for content helpers), Task 1.8 (Content initialization)
 **Description:**
 Verify WCAG AA compliance across all pages.
 
@@ -1054,7 +1061,7 @@ Verify WCAG AA compliance across all pages.
 - [ ] Keyboard-only navigation works for all interactive features
 - [ ] Forced-colors mode renders readable content
 
-#### Issue: Sample content and final cleanup (5.9)
+#### ~~Issue: Sample content and final cleanup (5.9)~~ [MERGED → 1.8]
 
 **Type:** task
 **Priority:** P2
@@ -1089,7 +1096,7 @@ Create real seed content, clean up unused files, restyle error page, update READ
 **Type:** task
 **Priority:** P2
 **Parent:** Phase 5
-**Dependencies:** Task 5.9 (Sample content and final cleanup)
+**Dependencies:** Task 1.8 (Content initialization)
 **Description:**
 Set up automated dead link detection.
 
@@ -1109,145 +1116,139 @@ Set up automated dead link detection.
 
 ---
 
-## Dependencies
+## Dependencies (post-consolidation)
 
 | Blocked Task | Blocked By | Reason |
 |-------------|------------|--------|
-| Task 1.5 (Root layout rewrite) | Task 1.1 (Clean package.json dependencies) | Fonts installed via 1.1 |
-| Task 1.5 (Root layout rewrite) | Task 1.4 (CSS token migration) | CSS vars reference new font names |
-| Task 1.7 (Next.js config updates) | Task 1.1 (Clean package.json dependencies) | Velite package installed via 1.1 |
-| Task 2.1 (Velite configuration) | Task 1.1 (Clean package.json dependencies) | Velite, rehype-pretty-code, shiki, remark-gfm installed |
-| Task 2.1 (Velite configuration) | Task 1.7 (Next.js config updates) | Config-based Velite integration set up |
-| Task 2.1 (Velite configuration) | Task 1.8 (Content directory structure) | Seed content to compile |
-| Task 2.2 (Content helper module) | Task 2.1 (Velite configuration) | Velite generates collections |
-| Task 2.5 (MDX components) | Task 2.1 (Velite configuration) | Velite compiles MDX with rehype-pretty-code |
-| Task 3.3 (MainNav update) | Task 3.2 (Header redesign) | Header renders MainNav |
-| Task 3.4 (Mobile navigation drawer) | Task 3.2 (Header redesign) | Header provides trigger |
-| Task 3.4 (Mobile navigation drawer) | Task 3.3 (MainNav update) | Nav items defined |
-| Task 3.5 (StatusBar component) | Task 2.3 (Vibe colour utilities) | Vibe utilities for colour reading |
-| Task 3.6 (VibeDrawer component) | Task 2.3 (Vibe colour utilities) | Vibe utilities |
-| Task 3.6 (VibeDrawer component) | Task 3.5 (StatusBar component) | StatusBar triggers drawer |
-| Task 3.7 (Vibe blocking script) | Task 1.4 (CSS token migration) | CSS defaults and color-mix declarations |
-| Task 3.7 (Vibe blocking script) | Task 1.5 (Root layout rewrite) | Layout structure for script injection |
-| Task 3.7 (Vibe blocking script) | Task 1.7 (Next.js config updates) | CSP unsafe-inline for blocking script |
-| Task 3.9 (ReturnToTop repositioning) | Task 3.5 (StatusBar component) | StatusBar exists to measure clearance |
-| Task 4.1 (Homepage) | Task 2.2 (Content helper module) | Content helpers |
-| Task 4.1 (Homepage) | Task 3.8 (Particle canvas) | ParticleCanvas component |
-| Task 4.1 (Homepage) | Task 4.2 (PostCard and PostList components) | PostCard component |
-| Task 4.2 (PostCard and PostList components) | Task 2.2 (Content helper module) | Content helpers, formatDate |
-| Task 4.3 (Blog index page) | Task 4.2 (PostCard and PostList components) | PostList, PostCard components |
-| Task 4.4 (Post page) | Task 2.2 (Content helper module) | Content helpers |
-| Task 4.4 (Post page) | Task 2.4 (Extend metadata helpers) | Extended metadata |
-| Task 4.4 (Post page) | Task 2.5 (MDX components) | MDX components |
-| Task 4.6 (Projects page) | Task 2.2 (Content helper module) | Content helpers |
-| Task 5.1 (Sitemap rewrite) | Task 2.2 (Content helper module) | Imports allPosts from content helpers |
-| Task 5.3 (404 page redesign) | Task 2.2 (Content helper module) | Content helpers |
-| Task 5.5 (RSS feed) | Task 2.2 (Content helper module) | Content helpers |
-| Task 5.6 (Unit tests for vibe utilities) | Task 2.3 (Vibe colour utilities) | vibe.ts exists |
-| Task 5.7 (Unit tests for content helpers) | Task 2.2 (Content helper module) | content.ts exists |
-| Task 5.8 (Accessibility audit) | Task 4.4 (Post page) | Audit targets post page features (copy button, ToC, external links) |
-| Task 5.8 (Accessibility audit) | Task 5.6 (Unit tests for vibe utilities) | Tests verify contrast checking works |
-| Task 5.8 (Accessibility audit) | Task 5.7 (Unit tests for content helpers) | Tests verify content helpers work |
-| Task 5.8 (Accessibility audit) | Task 5.9 (Sample content and final cleanup) | Complete site to audit |
-| Task 5.10 (Dead link checking in CI) | Task 5.9 (Sample content and final cleanup) | Content exists to check |
+| 1.5 Root layout rewrite | 1.1 Foundation config cleanup | Fonts installed via 1.1 |
+| 1.5 Root layout rewrite | 1.4 CSS token migration | CSS vars reference new font names |
+| 1.5 Root layout rewrite | 1.7 Next.js config + app layout | CSP unsafe-inline for blocking script |
+| 1.7 Next.js config + app layout | 1.1 Foundation config cleanup | Velite package installed via 1.1 |
+| 2.1 Content pipeline | 1.1 Foundation config cleanup | Velite, rehype-pretty-code, shiki, remark-gfm installed |
+| 2.1 Content pipeline | 1.7 Next.js config + app layout | Config-based Velite integration set up |
+| 2.1 Content pipeline | 1.8 Content initialization | Seed content to compile |
+| 2.5 MDX components | 2.1 Content pipeline | Velite compiles MDX with rehype-pretty-code |
+| 3.4 Mobile navigation drawer | 3.2 Desktop navigation | Header provides trigger, nav items defined |
+| 3.5 StatusBar and ReturnToTop | 2.3 Vibe colour utilities | Vibe utilities for colour reading |
+| 3.6 VibeDrawer component | 2.3 Vibe colour utilities | Vibe utilities |
+| 3.6 VibeDrawer component | 3.5 StatusBar and ReturnToTop | StatusBar triggers drawer |
+| 4.1 Homepage | 2.1 Content pipeline | Content helpers |
+| 4.1 Homepage | 3.8 Particle canvas | ParticleCanvas component |
+| 4.1 Homepage | 4.2 Blog listing | PostCard component |
+| 4.2 Blog listing | 2.1 Content pipeline | Content helpers, formatDate |
+| 4.4 Post page | 2.1 Content pipeline | Content helpers |
+| 4.4 Post page | 2.4 Extend metadata helpers | Extended metadata |
+| 4.4 Post page | 2.5 MDX components | MDX components |
+| 4.6 Projects page | 2.1 Content pipeline | Content helpers |
+| 5.1 Sitemap rewrite | 2.1 Content pipeline | Imports allPosts |
+| 5.3 404 page redesign | 2.1 Content pipeline | Content helpers |
+| 5.5 RSS feed | 2.1 Content pipeline | Content helpers |
+| 5.6 Unit tests for vibe utilities | 2.3 Vibe colour utilities | vibe.ts exists |
+| 5.7 Unit tests for content helpers | 2.1 Content pipeline | content.ts exists |
+| 5.8 Accessibility audit | 4.4 Post page | Audit targets post page features |
+| 5.8 Accessibility audit | 5.6 Unit tests for vibe utilities | Tests verify contrast checking works |
+| 5.8 Accessibility audit | 5.7 Unit tests for content helpers | Tests verify content helpers work |
+| 5.8 Accessibility audit | 1.8 Content initialization | Complete site to audit |
+| 5.10 Dead link checking in CI | 1.8 Content initialization | Content exists to check |
 
 ## Coverage Matrix
 
-| Plan Task | Bead Title | Sub-Epic |
-|-----------|------------|----------|
-| 1.1 Clean package.json dependencies | Clean package.json dependencies | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.2 Clean environment variables | Clean environment variables | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.3 Update site configuration | Update site configuration | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.4 CSS token migration | CSS token migration | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.5 Root layout rewrite | Root layout rewrite | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.6 App layout cleanup | App layout cleanup | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.7 Next.js config updates | Next.js config updates | Phase 1: Foundation & Infrastructure Cleanup |
-| 1.8 Content directory structure | Content directory structure | Phase 1: Foundation & Infrastructure Cleanup |
-| 2.1 Velite configuration | Velite configuration | Phase 2: Content Pipeline & Shared Abstractions |
-| 2.2 Content helper module | Content helper module | Phase 2: Content Pipeline & Shared Abstractions |
-| 2.3 Vibe colour utilities | Vibe colour utilities | Phase 2: Content Pipeline & Shared Abstractions |
-| 2.4 Extend metadata helpers | Extend metadata helpers | Phase 2: Content Pipeline & Shared Abstractions |
-| 2.5 MDX components | MDX components | Phase 2: Content Pipeline & Shared Abstractions |
-| 3.1 Footer component | Footer component | Phase 3: Components & Interactive Features |
-| 3.2 Header redesign | Header redesign | Phase 3: Components & Interactive Features |
-| 3.3 MainNav update | MainNav update | Phase 3: Components & Interactive Features |
-| 3.4 Mobile navigation drawer | Mobile navigation drawer | Phase 3: Components & Interactive Features |
-| 3.5 StatusBar component | StatusBar component | Phase 3: Components & Interactive Features |
-| 3.6 VibeDrawer component | VibeDrawer component | Phase 3: Components & Interactive Features |
-| 3.7 Vibe blocking script | Vibe blocking script | Phase 3: Components & Interactive Features |
-| 3.8 Particle canvas | Particle canvas | Phase 3: Components & Interactive Features |
-| 3.9 ReturnToTop repositioning | ReturnToTop repositioning | Phase 3: Components & Interactive Features |
-| 4.1 Homepage | Homepage | Phase 4: Page Routes |
-| 4.2 PostCard and PostList components | PostCard and PostList components | Phase 4: Page Routes |
-| 4.3 Blog index page | Blog index page | Phase 4: Page Routes |
-| 4.4 Post page | Post page | Phase 4: Page Routes |
-| 4.5 About page | About page | Phase 4: Page Routes |
-| 4.6 Projects page | Projects page | Phase 4: Page Routes |
-| 4.7 Now page | Now page | Phase 4: Page Routes |
-| 5.1 Sitemap rewrite | Sitemap rewrite | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.2 Robots.txt cleanup | Robots.txt cleanup | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.3 404 page redesign | 404 page redesign | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.4 OG image route rebrand | OG image route rebrand | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.5 RSS feed | RSS feed | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.6 Unit tests for vibe utilities | Unit tests for vibe utilities | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.7 Unit tests for content helpers | Unit tests for content helpers | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.8 Accessibility audit | Accessibility audit | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.9 Sample content and final cleanup | Sample content and final cleanup | Phase 5: SEO, Feeds, Testing & Polish |
-| 5.10 Dead link checking in CI | Dead link checking in CI | Phase 5: SEO, Feeds, Testing & Polish |
+| Plan Task | Bead Title | Sub-Epic | Status |
+|-----------|------------|----------|--------|
+| 1.1 Clean package.json dependencies | Foundation config cleanup | Phase 1 | open (absorbed 1.2, 1.3) |
+| ~~1.2 Clean environment variables~~ | ~~Clean environment variables~~ | ~~Phase 1~~ | merged → 1.1 |
+| ~~1.3 Update site configuration~~ | ~~Update site configuration~~ | ~~Phase 1~~ | merged → 1.1 |
+| 1.4 CSS token migration | CSS token migration | Phase 1 | open |
+| 1.5 Root layout rewrite | Root layout rewrite | Phase 1 | open (absorbed 3.7) |
+| ~~1.6 App layout cleanup~~ | ~~App layout cleanup~~ | ~~Phase 1~~ | merged → 1.7 |
+| 1.7 Next.js config updates | Next.js config and app layout cleanup | Phase 1 | open (absorbed 1.6) |
+| 1.8 Content directory structure | Content initialization | Phase 1 | open (absorbed 5.9) |
+| 2.1 Velite configuration | Content pipeline | Phase 2 | open (absorbed 2.2) |
+| ~~2.2 Content helper module~~ | ~~Content helper module~~ | ~~Phase 2~~ | merged → 2.1 |
+| 2.3 Vibe colour utilities | Vibe colour utilities | Phase 2 | open |
+| 2.4 Extend metadata helpers | Extend metadata helpers | Phase 2 | open |
+| 2.5 MDX components | MDX components | Phase 2 | open |
+| 3.1 Footer component | Footer component | Phase 3 | open |
+| 3.2 Header redesign | Desktop navigation | Phase 3 | open (absorbed 3.3) |
+| ~~3.3 MainNav update~~ | ~~MainNav update~~ | ~~Phase 3~~ | merged → 3.2 |
+| 3.4 Mobile navigation drawer | Mobile navigation drawer | Phase 3 | open |
+| 3.5 StatusBar component | StatusBar and ReturnToTop | Phase 3 | open (absorbed 3.9) |
+| 3.6 VibeDrawer component | VibeDrawer component | Phase 3 | open |
+| ~~3.7 Vibe blocking script~~ | ~~Vibe blocking script~~ | ~~Phase 3~~ | merged → 1.5 |
+| 3.8 Particle canvas | Particle canvas | Phase 3 | open |
+| ~~3.9 ReturnToTop repositioning~~ | ~~ReturnToTop repositioning~~ | ~~Phase 3~~ | merged → 3.5 |
+| 4.1 Homepage | Homepage | Phase 4 | open |
+| 4.2 PostCard and PostList components | Blog listing | Phase 4 | open (absorbed 4.3) |
+| ~~4.3 Blog index page~~ | ~~Blog index page~~ | ~~Phase 4~~ | merged → 4.2 |
+| 4.4 Post page | Post page | Phase 4 | open |
+| 4.5 About page | Static content pages | Phase 4 | open (absorbed 4.7) |
+| 4.6 Projects page | Projects page | Phase 4 | open |
+| ~~4.7 Now page~~ | ~~Now page~~ | ~~Phase 4~~ | merged → 4.5 |
+| 5.1 Sitemap rewrite | Sitemap rewrite | Phase 5 | open |
+| 5.2 Robots.txt cleanup | Robots.txt cleanup | Phase 5 | open |
+| 5.3 404 page redesign | 404 page redesign | Phase 5 | open |
+| 5.4 OG image route rebrand | OG image route rebrand | Phase 5 | open |
+| 5.5 RSS feed | RSS feed | Phase 5 | open |
+| 5.6 Unit tests for vibe utilities | Unit tests for vibe utilities | Phase 5 | open |
+| 5.7 Unit tests for content helpers | Unit tests for content helpers | Phase 5 | open |
+| 5.8 Accessibility audit | Accessibility audit | Phase 5 | open |
+| ~~5.9 Sample content and final cleanup~~ | ~~Sample content and final cleanup~~ | ~~Phase 5~~ | merged → 1.8 |
+| 5.10 Dead link checking in CI | Dead link checking in CI | Phase 5 | open |
 
 **Plan tasks:** 39
-**Beads mapped:** 39
-**Coverage:** 100%
+**Open beads:** 30
+**Merged beads:** 9
+**Coverage:** 100% (all 39 plan tasks accounted for)
 
 ## Bead ID Mapping
 
-| Plan Ref | Bead ID |
-|----------|---------|
-| Feature epic | xr-lfk |
-| Phase 1 | xr-lfk.1 |
-| Phase 2 | xr-lfk.2 |
-| Phase 3 | xr-lfk.3 |
-| Phase 4 | xr-lfk.4 |
-| Phase 5 | xr-lfk.5 |
-| Task 1.1 | xr-lfk.1.1 |
-| Task 1.2 | xr-lfk.1.2 |
-| Task 1.3 | xr-lfk.1.3 |
-| Task 1.4 | xr-lfk.1.4 |
-| Task 1.5 | xr-lfk.1.5 |
-| Task 1.6 | xr-lfk.1.6 |
-| Task 1.7 | xr-lfk.1.7 |
-| Task 1.8 | xr-lfk.1.8 |
-| Task 2.1 | xr-lfk.2.1 |
-| Task 2.2 | xr-lfk.2.2 |
-| Task 2.3 | xr-lfk.2.3 |
-| Task 2.4 | xr-lfk.2.4 |
-| Task 2.5 | xr-lfk.2.5 |
-| Task 3.1 | xr-lfk.3.1 |
-| Task 3.2 | xr-lfk.3.2 |
-| Task 3.3 | xr-lfk.3.3 |
-| Task 3.4 | xr-lfk.3.4 |
-| Task 3.5 | xr-lfk.3.5 |
-| Task 3.6 | xr-lfk.3.6 |
-| Task 3.7 | xr-lfk.3.7 |
-| Task 3.8 | xr-lfk.3.8 |
-| Task 3.9 | xr-lfk.3.9 |
-| Task 4.1 | xr-lfk.4.1 |
-| Task 4.2 | xr-lfk.4.2 |
-| Task 4.3 | xr-lfk.4.3 |
-| Task 4.4 | xr-lfk.4.4 |
-| Task 4.5 | xr-lfk.4.5 |
-| Task 4.6 | xr-lfk.4.6 |
-| Task 4.7 | xr-lfk.4.7 |
-| Task 5.1 | xr-lfk.5.1 |
-| Task 5.2 | xr-lfk.5.2 |
-| Task 5.3 | xr-lfk.5.3 |
-| Task 5.4 | xr-lfk.5.4 |
-| Task 5.5 | xr-lfk.5.5 |
-| Task 5.6 | xr-lfk.5.6 |
-| Task 5.7 | xr-lfk.5.7 |
-| Task 5.8 | xr-lfk.5.8 |
-| Task 5.9 | xr-lfk.5.9 |
-| Task 5.10 | xr-lfk.5.10 |
+| Plan Ref | Bead ID | Status |
+|----------|---------|--------|
+| Feature epic | xr-lfk | open |
+| Phase 1 | xr-lfk.1 | open |
+| Phase 2 | xr-lfk.2 | open |
+| Phase 3 | xr-lfk.3 | open |
+| Phase 4 | xr-lfk.4 | open |
+| Phase 5 | xr-lfk.5 | open |
+| Tasks 1.1+1.2+1.3 | xr-lfk.1.1 | open |
+| ~~Task 1.2~~ | ~~xr-lfk.1.2~~ | merged → 1.1 |
+| ~~Task 1.3~~ | ~~xr-lfk.1.3~~ | merged → 1.1 |
+| Task 1.4 | xr-lfk.1.4 | open |
+| Tasks 1.5+3.7 | xr-lfk.1.5 | open |
+| ~~Task 1.6~~ | ~~xr-lfk.1.6~~ | merged → 1.7 |
+| Tasks 1.7+1.6 | xr-lfk.1.7 | open |
+| Tasks 1.8+5.9 | xr-lfk.1.8 | open |
+| Tasks 2.1+2.2 | xr-lfk.2.1 | open |
+| ~~Task 2.2~~ | ~~xr-lfk.2.2~~ | merged → 2.1 |
+| Task 2.3 | xr-lfk.2.3 | open |
+| Task 2.4 | xr-lfk.2.4 | open |
+| Task 2.5 | xr-lfk.2.5 | open |
+| Task 3.1 | xr-lfk.3.1 | open |
+| Tasks 3.2+3.3 | xr-lfk.3.2 | open |
+| ~~Task 3.3~~ | ~~xr-lfk.3.3~~ | merged → 3.2 |
+| Task 3.4 | xr-lfk.3.4 | open |
+| Tasks 3.5+3.9 | xr-lfk.3.5 | open |
+| Task 3.6 | xr-lfk.3.6 | open |
+| ~~Task 3.7~~ | ~~xr-lfk.3.7~~ | merged → 1.5 |
+| Task 3.8 | xr-lfk.3.8 | open |
+| ~~Task 3.9~~ | ~~xr-lfk.3.9~~ | merged → 3.5 |
+| Task 4.1 | xr-lfk.4.1 | open |
+| Tasks 4.2+4.3 | xr-lfk.4.2 | open |
+| ~~Task 4.3~~ | ~~xr-lfk.4.3~~ | merged → 4.2 |
+| Task 4.4 | xr-lfk.4.4 | open |
+| Tasks 4.5+4.7 | xr-lfk.4.5 | open |
+| Task 4.6 | xr-lfk.4.6 | open |
+| ~~Task 4.7~~ | ~~xr-lfk.4.7~~ | merged → 4.5 |
+| Task 5.1 | xr-lfk.5.1 | open |
+| Task 5.2 | xr-lfk.5.2 | open |
+| Task 5.3 | xr-lfk.5.3 | open |
+| Task 5.4 | xr-lfk.5.4 | open |
+| Task 5.5 | xr-lfk.5.5 | open |
+| Task 5.6 | xr-lfk.5.6 | open |
+| Task 5.7 | xr-lfk.5.7 | open |
+| Task 5.8 | xr-lfk.5.8 | open |
+| ~~Task 5.9~~ | ~~xr-lfk.5.9~~ | merged → 1.8 |
+| Task 5.10 | xr-lfk.5.10 | open |
 
 **Integration branch:** `integration/site-setup`
 
@@ -1255,6 +1256,9 @@ Set up automated dead link detection.
 
 - Feature epic: 1
 - Sub-epics (phases): 5
-- Issues (tasks): 39
-- Blocker dependencies: 37
-- Items ready immediately (no blockers): 16 (tasks 1.1, 1.2, 1.3, 1.4, 1.6, 1.8, 2.3, 2.4, 3.1, 3.2, 3.8, 4.5, 4.7, 5.2, 5.4, 5.9)
+- Open task beads: 30
+- Merged task beads: 9
+- Blocker dependencies: 28
+- Items ready immediately (no blockers): 11 (tasks 1.1, 1.4, 1.8, 2.3, 2.4, 3.1, 3.2, 3.8, 4.5, 5.2, 5.4)
+- Dependency waves: 5
+- Critical path: 1.1 → 1.7 → 2.1 → 4.2 → 4.1 (5 steps)
