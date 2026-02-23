@@ -7,7 +7,7 @@ export default async function RootLayout({
     <div className="flex grow flex-col items-center p-1">
       <div className="w-full max-w-7xl grow">
         <Header />
-        <main className="h-full w-full grow">{children}</main>
+        <main id="main-content" className="h-full w-full grow">{children}</main>
       </div>
     </div>
   );
