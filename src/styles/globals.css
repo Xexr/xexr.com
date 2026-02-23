@@ -19,28 +19,51 @@
   }
   body {
     letter-spacing: var(--tracking-normal);
-    @apply bg-background text-foreground;
+    color: var(--body-text);
+    @apply bg-background;
   }
   * {
     @apply border-border outline-ring/50;
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: -0.05em;
+    color: var(--foreground);
+  }
 }
 
 @layer utilities {
-  /* Chrome, Edge, and Safari */
   *::-webkit-scrollbar {
     width: 10px;
   }
 
   *::-webkit-scrollbar-track {
-    background: var(--scrollbar-background);
+    background: var(--background);
     border-radius: 5px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-foreground);
+    background-color: oklch(0.3 0 0);
     border-radius: 14px;
-    border: 1px solid var(--scrollbar-border);
+    border: 1px solid oklch(0.2 0 0);
+  }
+
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      oklch(0 0 0 / 3%) 2px,
+      oklch(0 0 0 / 3%) 4px
+    );
   }
 }
 
@@ -78,8 +101,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --font-sans: var(--font-plus-jakarta-sans), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
   --font-serif: var(--font-serif);
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -119,41 +142,45 @@
 }
 
 :root {
-  --background: oklch(0.147 0.004 49.25);
-  --foreground: oklch(0.985 0.001 106.423);
-  --card: oklch(0.216 0.006 56.043);
-  --card-foreground: oklch(0.985 0.001 106.423);
-  --popover: oklch(0.216 0.006 56.043);
-  --popover-foreground: oklch(0.985 0.001 106.423);
-  --primary: oklch(0.77 0.16 70);
-  --primary-foreground: oklch(0.28 0.07 46);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.268 0.007 34.298);
-  --muted-foreground: oklch(0.709 0.01 56.259);
-  --accent: oklch(0.77 0.16 70);
-  --accent-foreground: oklch(0.28 0.07 46);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(1 0 0);
+  --background: #050505;
+  --foreground: #e8e8e8;
+  --body-text: #a0a0a0;
+  --muted-foreground: #8a8a8a;
+  --accent: #00ff88;
+  --accent-dim: color-mix(in srgb, var(--accent) 18%, transparent);
+  --accent-soft: color-mix(in srgb, var(--accent) 25%, transparent);
+  --accent-glow: color-mix(in srgb, var(--accent) 10%, transparent);
+  --card: #0a0a0a;
+  --card-foreground: #e8e8e8;
+  --popover: #0a0a0a;
+  --popover-foreground: #e8e8e8;
+  --primary: #00ff88;
+  --primary-foreground: #050505;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e8e8e8;
+  --muted: #1a1a1a;
+  --accent-foreground: #050505;
+  --destructive: #ff4444;
+  --destructive-foreground: #e8e8e8;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.553 0.013 58.071);
-  --chart-1: oklch(0.88 0.15 92);
-  --chart-2: oklch(0.77 0.16 70);
-  --chart-3: oklch(0.67 0.16 58);
-  --chart-4: oklch(0.56 0.15 49);
-  --chart-5: oklch(0.47 0.12 46);
-  --sidebar: oklch(0.216 0.006 56.043);
-  --sidebar-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-primary: oklch(0.77 0.16 70);
-  --sidebar-primary-foreground: oklch(0.28 0.07 46);
-  --sidebar-accent: oklch(0.77 0.16 70);
-  --sidebar-accent-foreground: oklch(0.28 0.07 46);
+  --ring: #00ff88;
+  --chart-1: #00ff88;
+  --chart-2: #00cc6e;
+  --chart-3: #009954;
+  --chart-4: #00663a;
+  --chart-5: #003320;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #e8e8e8;
+  --sidebar-primary: #00ff88;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #00ff88;
+  --sidebar-accent-foreground: #050505;
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.553 0.013 58.071);
-  --font-sans: var(--font-geist-sans), Inter, sans-serif;
+  --sidebar-ring: #00ff88;
+  --font-sans: var(--font-plus-jakarta-sans), sans-serif;
   --font-serif: Source Serif 4, serif;
-  --font-mono: var(--font-geist-mono), JetBrains Mono, monospace;
+  --font-mono: var(--font-jetbrains-mono), monospace;
   --radius: 0.375rem;
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
@@ -176,4 +203,16 @@
   --letter-spacing: 0em;
   --spacing: 0.25rem;
   --tracking-normal: 0em;
+}
+
+@media (forced-colors: active) {
+  :root {
+    --background: Canvas;
+    --foreground: CanvasText;
+    --body-text: CanvasText;
+    --muted-foreground: GrayText;
+    --accent: LinkText;
+    --border: ButtonBorder;
+    --ring: Highlight;
+  }
 }
