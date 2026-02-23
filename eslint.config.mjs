@@ -70,7 +70,7 @@ const eslintConfig = [
     },
   },
   {
-    ignores: [".next", "next-env.d.ts", "eslint.config.mjs", "coverage"],
+    ignores: [".next", ".velite", "next-env.d.ts", "eslint.config.mjs", "coverage"],
   },
 ];
 
