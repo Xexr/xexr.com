@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const navItems: { href: string; label: string }[] = [
+export const navItems: { href: string; label: string }[] = [
   { href: "/posts", label: "Posts" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },

@@ -1,6 +1,6 @@
 import { MainNav } from "./MainNav";
+import { MobileNav } from "./MobileNav";
 import Link from "next/link";
-import { Menu } from "lucide-react";
 
 export default async function Header() {
   return (
@@ -17,9 +17,7 @@ export default async function Header() {
         </Link>
         <MainNav className="hidden md:flex" />
       </div>
-      <button className="text-foreground md:hidden" aria-label="Open menu">
-        <Menu className="size-6" />
-      </button>
+      <MobileNav />
     </header>
   );
 }
