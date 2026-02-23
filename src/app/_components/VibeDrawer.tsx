@@ -284,7 +284,10 @@ export default function VibeDrawer({
   const handleSelect = useCallback(
     (hex: string, animate: boolean) => {
       const el = document.documentElement;
-      if (animate) {
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (animate && !reducedMotion) {
         el.style.setProperty(
           "--vibe-transition",
           "0.4s cubic-bezier(0.4, 0, 0.2, 1)",

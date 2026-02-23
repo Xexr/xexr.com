@@ -138,7 +138,7 @@ export default async function PostPage({ params }: PageProps) {
           <TableOfContents variant="mobile" />
 
           {/* Prose content */}
-          <div className="prose prose-invert prose-gray max-w-none leading-[1.75] prose-headings:font-sans prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-code:text-foreground prose-pre:bg-transparent prose-pre:p-0">
+          <div className="prose prose-invert prose-gray max-w-none leading-[1.75] prose-headings:font-sans prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-accent prose-a:underline prose-a:decoration-accent/40 hover:prose-a:decoration-accent prose-code:text-foreground prose-pre:bg-transparent prose-pre:p-0">
             <MDXContent code={post.body} />
           </div>
 

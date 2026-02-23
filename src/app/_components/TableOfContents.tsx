@@ -89,9 +89,14 @@ export default function TableOfContents({
             href={`#${h.id}`}
             onClick={(e) => {
               e.preventDefault();
+              const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+              ).matches;
               document
                 .getElementById(h.id)
-                ?.scrollIntoView({ behavior: "smooth" });
+                ?.scrollIntoView({
+                  behavior: reducedMotion ? "auto" : "smooth",
+                });
               setIsOpen(false);
             }}
             className={`block transition-colors duration-200 hover:text-accent ${
