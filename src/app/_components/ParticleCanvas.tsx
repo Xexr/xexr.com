@@ -2,6 +2,16 @@
 
 import { useEffect, useRef } from "react"
 
+const canvasSupported =
+  typeof document !== "undefined" &&
+  (() => {
+    try {
+      return !!document.createElement("canvas").getContext("2d")
+    } catch {
+      return false
+    }
+  })()
+
 interface Particle {
   x: number
   y: number
@@ -29,6 +39,7 @@ export function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    if (!canvasSupported) return
     const el = canvasRef.current
     if (!el) return
     const context = el.getContext("2d")
@@ -204,6 +215,8 @@ export function ParticleCanvas() {
       document.removeEventListener("visibilitychange", onVisibilityChange)
     }
   }, [])
+
+  if (!canvasSupported) return null
 
   return (
     <canvas
