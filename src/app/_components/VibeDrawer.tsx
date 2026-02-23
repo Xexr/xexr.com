@@ -99,7 +99,7 @@ function DrawerContent({
   onPresetKeyDown,
 }: {
   accent: string;
-  onSelect: (hex: string, animate: boolean) => void;
+  onSelect: (hex: string) => void;
   onClose: () => void;
   onPresetKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }) {
@@ -116,7 +116,7 @@ function DrawerContent({
         return;
       }
       setContrastWarning(null);
-      onSelect(hex, true);
+      onSelect(hex);
     },
     [onSelect],
   );
@@ -142,7 +142,7 @@ function DrawerContent({
         setContrastWarning(null);
       }
 
-      onSelect(hex, false);
+      onSelect(hex);
     },
     [onSelect],
   );
@@ -246,7 +246,7 @@ function DrawerContent({
         {!isDefault && (
           <button
             type="button"
-            onClick={() => onSelect(DEFAULT_ACCENT, true)}
+            onClick={() => onSelect(DEFAULT_ACCENT)}
             className="text-xs text-muted-foreground underline decoration-transparent transition-colors hover:text-foreground hover:decoration-current outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] rounded"
           >
             Reset to Mint
@@ -282,20 +282,7 @@ export default function VibeDrawer({
   }, []);
 
   const handleSelect = useCallback(
-    (hex: string, animate: boolean) => {
-      const el = document.documentElement;
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (animate && !reducedMotion) {
-        el.style.setProperty(
-          "--vibe-transition",
-          "0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-        );
-      } else {
-        el.style.setProperty("--vibe-transition", "0s");
-      }
-
+    (hex: string) => {
       applyAccent(hex);
       saveVibeColour(hex);
       // Notify same-tab subscribers (StorageEvent only fires in other tabs)
