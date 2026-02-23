@@ -5,7 +5,12 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const navItems: { href: Route; label: string }[] = [];
+const navItems: { href: string; label: string }[] = [
+  { href: "/posts", label: "Posts" },
+  { href: "/about", label: "About" },
+  { href: "/projects", label: "Projects" },
+  { href: "/now", label: "Now" },
+];
 
 interface Props {
   className?: string;
@@ -15,7 +20,10 @@ interface Props {
 export function MainNav({ className, ...props }: Props) {
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+      className={cn(
+        "flex items-center space-x-4 font-mono lg:space-x-6",
+        className,
+      )}
       {...props}
     >
       {navItems.map((item) => (
@@ -31,19 +39,20 @@ export function MainNavItem({
   href,
   children,
 }: {
-  href: Route;
+  href: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const isActive = pathname.startsWith(href);
 
   return (
     <Link
-      href={href}
+      href={href as Route}
       className={cn(
-        "transition-colors",
-        pathname === href
-          ? "bg-primary text-primary-foreground rounded-md px-3 py-1"
-          : "text-foreground",
+        "text-sm transition-colors",
+        isActive
+          ? "text-accent"
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {children}
