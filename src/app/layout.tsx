@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { type Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { metadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import VibeShell from "./_components/VibeShell";
@@ -63,7 +64,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
         <VibeShell />
         <Analytics />
         <div className="scanlines" aria-hidden="true" />
