@@ -1,16 +1,20 @@
 import "@/styles/globals.css";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { type Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import { siteConfig } from "@/lib/siteConfig";
 import { metadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import VibeShell from "./_components/VibeShell";
 
-const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
-
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta-sans",
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+});
 
 // Metadata is managed via src/lib/metadata.ts
 export { metadata };
@@ -19,38 +23,50 @@ export const viewport: Viewport = {
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
+
+const vibeScript = `(function(){try{var v=localStorage.getItem("xexr-vibe");if(v)document.documentElement.style.setProperty("--accent",v)}catch(e){}})()`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": siteConfig.url,
-    name: siteConfig.name,
-    url: siteConfig.url,
-    logo: siteConfig.ogImage,
-    description: siteConfig.description,
-    knowsAbout: siteConfig.topics,
+    "@type": "WebSite",
+    name: "xexr.com",
+    url: "https://xexr.com",
+    author: {
+      "@type": "Person",
+      name: "Dane Poyzer",
+    },
   };
 
   return (
     <html
       lang="en"
-      className={cn("dark", geistSans.variable, geistMono.variable)}
+      className={cn(plusJakartaSans.variable, jetbrainsMono.variable, "dark")}
     >
       <head>
+        <meta name="darkreader-lock" />
+        <script
+          dangerouslySetInnerHTML={{ __html: vibeScript }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="bg-background text-foreground flex min-h-screen flex-col font-sans">
-          {children}
-          <VibeShell />
-          <Analytics />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-accent"
+        >
+          Skip to content
+        </a>
+        {children}
+        <VibeShell />
+        <Analytics />
+        <div className="scanlines" aria-hidden="true" />
       </body>
     </html>
   );
