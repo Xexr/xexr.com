@@ -1,15 +1,14 @@
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Geist, Geist_Mono } from "next/font/google";
 import { type Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { siteConfig } from "@/lib/siteConfig";
 import { metadata } from "@/lib/metadata";
-import { Roboto } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 
 // Metadata is managed via src/lib/metadata.ts
@@ -39,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark", GeistSans.variable, GeistMono.variable, roboto.variable)}
+      className={cn("dark", geistSans.variable, geistMono.variable)}
     >
       <head>
         <script

@@ -5,7 +5,7 @@ export const siteConfig = {
   tagline: "by Dane Poyzer",
   description:
     "Personal site by Dane Poyzer",
-  url: "https://xexrcom.vercel.app",
+  url: "https://xexr.com",
   manifestPath: "/site.webmanifest",
 
   // CDN/Assets - used for remote image patterns in next.config.ts
@@ -19,8 +19,11 @@ export const siteConfig = {
     country: "United Kingdom",
   },
 
-  // Emails
-  supportEmail: "support@example.com",
+  // Author
+  author: {
+    name: "Dane Poyzer",
+    url: "https://xexr.com/about",
+  },
 
   // Open Graph & icons
   ogImage: "https://project.poyzer.download/images/icon/icon_512.webp",
@@ -29,45 +32,17 @@ export const siteConfig = {
   twitter: {
     creator: "@danepoyzer",
   },
+  twitterHandle: "@danepoyzer",
+  githubUrl: "https://github.com/xexr",
+  substackUrl: "https://xexr.substack.com",
 
   // SEO
   keywords: [
-    "keyword 1",
-    "keyword 2",
-    "keyword 3",
-    "keyword 4",
-    "keyword 5",
-    "keyword 6",
-    "keyword 7",
-    "keyword 8",
-    "keyword 9",
-    "keyword 10",
-    "keyword 11",
-    "keyword 12",
-    "keyword phrase 1",
-    "keyword phrase 2",
-    "keyword phrase 3",
-    "keyword phrase 4",
-    "keyword phrase 5",
-    "related term 1",
-    "related term 2",
-    "related term 3",
-    "related term 4",
-    "related term 5",
-    "industry term 1",
-    "industry term 2",
-    "industry term 3",
-    "industry term 4",
-    "industry term 5",
-    "action phrase 1",
-    "action phrase 2",
-    "action phrase 3",
-    "action phrase 4",
-    "specific feature 1",
-    "specific feature 2",
-    "specific feature 3",
-    "specific feature 4",
-    "specific feature 5",
+    "AI",
+    "indie hacker",
+    "software development",
+    "building in public",
+    "AI orchestration",
   ],
 
   // Schema.org topics
