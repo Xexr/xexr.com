@@ -1,53 +1,47 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/siteConfig";
+import { allPosts } from "@/lib/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const defaultPages = [
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: siteConfig.url,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
+      changeFrequency: "weekly",
       priority: 1,
     },
-    // other pages
     {
-      url: `${siteConfig.url}/signin`,
+      url: `${siteConfig.url}/posts`,
       lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
+      changeFrequency: "daily",
+      priority: 0.8,
     },
     {
-      url: `${siteConfig.url}/signup`,
+      url: `${siteConfig.url}/about`,
       lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
-      url: `${siteConfig.url}/forgot-password`,
+      url: `${siteConfig.url}/projects`,
       lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${siteConfig.url}/now`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
     },
   ];
 
-  // const postSlugs = await getAllPostSlugsWithModifyTime();
-  // const categorySlugs = await getAllCategories();
+  const postEntries: MetadataRoute.Sitemap = allPosts.map((post) => ({
+    url: `${siteConfig.url}/posts/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
 
-  const sitemap = [
-    ...defaultPages,
-    // ...postSlugs.map((e: any) => ({
-    //   url: `${siteConfig.url}/${e.slug}`,
-    //   lastModified: e.modified_at,
-    //   changeFrequency: "daily",
-    //   priority: 0.8,
-    // })),
-    // ...categorySlugs.map((e: any) => ({
-    //   url: `${siteConfig.url}/category/${e}`,
-    //   lastModified: new Date(),
-    //   changeFrequency: "daily",
-    //   priority: 0.7,
-    // })),
-  ];
-
-  return sitemap;
+  return [...staticPages, ...postEntries];
 }
