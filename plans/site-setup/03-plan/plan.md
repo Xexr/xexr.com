@@ -30,7 +30,7 @@ This approach was chosen because the codebase already has the right architectura
 | Syntax highlighting | Shiki via `rehype-pretty-code` | Build-time highlighting; spec requires macOS chrome + copy button |
 | Tag filtering | Client-side with `nuqs` URL sync | `nuqs` already installed; pattern: server renders all, client component filters |
 | State management | `localStorage` + CSS variables | No external state library; Vibe is the only persistent client state |
-| Dev server | `next dev --webpack` | Velite requires webpack plugin; Turbopack lacks support |
+| Dev server | `next dev` (Turbopack, default) | Velite started via top-level `await` in `next.config.ts` — no webpack plugin needed, fully Turbopack-compatible |
 | Dark mode | Forced `.dark` class, no toggle | Spec commits to dark-only; remove `next-themes` entirely |
 
 ---
@@ -103,15 +103,15 @@ This approach was chosen because the codebase already has the right architectura
 - **Key details:**
   - Remove: `geist`, `drizzle-orm`, `@libsql/client`, `drizzle-zod`, `drizzle-kit`, `@trpc/client`, `@trpc/server`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `next-themes`, `@ai-sdk/openai`, `@ai-sdk/google`, `ai`, `@upstash/ratelimit`, `@upstash/redis`, `sonner`, `@doublezero/sdk`
   - Add: `velite`, `rehype-pretty-code`, `shiki`, `@giscus/react`, `remark-gfm`
-  - Update dev script: `"dev": "next dev --webpack --port 3005"` (Velite needs webpack)
-  - Update build script: `"build": "next build --webpack"` (Velite requires webpack; plain Turbopack build will fail)
-  - Remove or alias the existing `build:webpack` script (now redundant since main `build` uses webpack)
+  - Update dev script: `"dev": "next dev --port 3005"` (Turbopack is the Next.js 16 default; Velite runs via config-based integration)
+  - Keep build script as: `"build": "next build"` (Velite starts via top-level `await` in `next.config.ts`, no `--webpack` needed)
+  - Remove the `build:webpack` script (no longer needed)
   - Remove scripts: `db:start`, `db:generate`, `db:migrate`, `db:push`, `db:studio`, `db:seed`
 - **Acceptance criteria:**
   - [ ] `pnpm install` succeeds with no missing peer deps
   - [ ] All removed packages absent from `node_modules` (verified via `pnpm ls`)
   - [ ] New packages installed and importable
-  - [ ] `pnpm build` uses `--webpack` (not Turbopack) — Velite requires this
+  - [ ] `pnpm build` succeeds with Turbopack (default) — Velite runs via config integration
 - **Dependencies:** None
 
 **1.2 Clean environment variables**
@@ -236,23 +236,28 @@ This approach was chosen because the codebase already has the right architectura
 - **Dependencies:** 1.2 (env.ts cleanup removes tRPC env vars)
 
 **1.7 Next.js config updates**
-- **What:** Add Velite webpack plugin, CSP headers skeleton, keep existing config
+- **What:** Add config-based Velite integration, CSP headers skeleton, keep existing config
 - **Files:**
-  - Modify: `next.config.ts` — add webpack plugin, headers function
+  - Modify: `next.config.ts` — add Velite build call, headers function
 - **Key details:**
-  - Add Velite webpack plugin (conditional: only in non-Turbopack builds):
+  - Start Velite via top-level `await` in config (Turbopack-compatible, no webpack plugin):
     ```typescript
-    webpack(config) {
-      config.plugins.push(new (require("velite/webpack"))());
-      return config;
+    import { build } from "velite"
+
+    await build({ watch: process.argv.includes("dev"), clean: !process.argv.includes("dev") })
+
+    const nextConfig: NextConfig = {
+      // ... existing config
     }
+    export default nextConfig
     ```
-    Note: Check Velite docs for exact import — may be `import { VeliteWebpackPlugin } from "velite"` or similar
+    This runs Velite before Next.js starts — works with both Turbopack (default) and webpack.
   - Add `headers()` function with CSP: allow `'unsafe-inline'` for Vibe blocking script, `frame-src giscus.app`
   - Add empty `redirects()` function (mechanism for future post renames)
   - Keep `typedRoutes: true`, `images.remotePatterns`
 - **Acceptance criteria:**
-  - [ ] `pnpm build:webpack` succeeds (Velite plugin loads)
+  - [ ] `pnpm build` succeeds (Velite runs via config, Turbopack bundles)
+  - [ ] `pnpm dev` starts with Velite in watch mode and Turbopack HMR
   - [ ] CSP header present in response (verify with curl or browser dev tools)
   - [ ] Existing config preserved (typed routes, image patterns)
 - **Dependencies:** 1.1 (velite package installed)
@@ -286,7 +291,7 @@ This approach was chosen because the codebase already has the right architectura
 ### Phase 2: Content Pipeline & Shared Abstractions
 
 **Objective:** Build the Velite content pipeline, shared utility modules, and MDX custom components that all page routes depend on.
-**Prerequisites:** Phase 1 — Velite installed, webpack plugin configured, content directory created
+**Prerequisites:** Phase 1 — Velite installed, config-based integration working, content directory created
 
 #### Tasks
 
@@ -306,7 +311,7 @@ This approach was chosen because the codebase already has the right architectura
   - Configure `remark-gfm` for GitHub Flavored Markdown
   - Output to `.velite/` directory
 - **Acceptance criteria:**
-  - [ ] `pnpm build:webpack` runs Velite and generates `.velite/` output
+  - [ ] `pnpm build` runs Velite and generates `.velite/` output
   - [ ] Generated types match spec Data Model
   - [ ] Seed post compiles without errors
   - [ ] Code blocks in seed post have syntax highlighting
@@ -411,7 +416,7 @@ This approach was chosen because the codebase already has the right architectura
 - **Dependencies:** 2.1 (Velite compiles MDX with rehype-pretty-code)
 
 #### Phase 2 Exit Criteria
-- [ ] `pnpm build:webpack` compiles seed post through Velite pipeline successfully
+- [ ] `pnpm build` compiles seed post through Velite pipeline successfully
 - [ ] Content helpers return typed data (import in a test page to verify)
 - [ ] All MDX custom components render correctly in seed post
 - [ ] Vibe utilities pass basic smoke test (import and call functions)
@@ -1045,7 +1050,7 @@ This approach was chosen because the codebase already has the right architectura
 - [ ] All unit tests pass
 - [ ] Accessibility audit passes with no critical issues
 - [ ] First post and project content live
-- [ ] `pnpm build:webpack` succeeds end-to-end
+- [ ] `pnpm build` succeeds end-to-end
 - [ ] `pnpm typecheck` passes
 - [ ] `pnpm lint` passes
 - [ ] Lighthouse score 90+ on Performance, Accessibility, Best Practices, SEO
@@ -1096,14 +1101,14 @@ All migration work is in Phase 1. No feature flags or backward compatibility nee
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| Velite + webpack incompatibility with Next.js 16 | Medium | High | Dev uses `--webpack` flag; `build:webpack` script already exists. Fall back to `contentlayer2` or manual MDX if Velite fails. |
+| Velite config-based integration breaks in future Next.js | Low | High | Config-based `await build()` is Velite's recommended approach. Falls back to npm script orchestration (`npm-run-all`) or `contentlayer2` if needed. |
 | Vibe blocking script blocked by CSP | Medium | Medium | Use `'unsafe-inline'` in CSP for scripts, or generate nonce per request. Test CSP with browser dev tools. |
 | Colour contrast failures for custom Vibe colours | Low | Medium | `meetsContrastAA()` enforces 4.5:1 in drawer; spectrum slider snaps to nearest passing value. |
 | Particle canvas performance on low-end devices | Medium | Low | Reduce count on mobile, pause when backgrounded, `prefers-reduced-motion` disables entirely. Canvas is progressive enhancement. |
 | `noUncheckedIndexedAccess` causes many `T | undefined` issues | Medium | Low | Use `.find()` instead of array index access. Pattern already handled in codebase. Minor developer friction, not a risk to functionality. |
 | Giscus configuration complexity (repo, category setup) | Low | Low | All config is public env vars. Document setup steps. Falls back to hidden comments section. |
 | OKLCh colour space browser support | Low | Low | `color-mix()` has 95%+ browser support. The blocking script sets hex directly; OKLCh is only used for the spectrum slider UI. Fallback to hex-based slider if needed. |
-| Turbopack required for dev speed but incompatible with Velite | Medium | Medium | Use `--webpack` for dev. Turbopack compatibility may arrive via Velite updates. Dev experience slightly slower but functional. |
+| Velite watch mode reliability under Turbopack | Low | Low | Config-based integration starts Velite in watch mode during `next dev`. If file watching conflicts arise, fall back to npm script orchestration with parallel processes. |
 
 ---
 
@@ -1223,7 +1228,7 @@ All migration work is in Phase 1. No feature flags or backward compatibility nee
 | `src/styles/globals.css` | 1.4 | Full colour token replacement, font vars, Vibe vars |
 | `src/app/layout.tsx` | 1.5, 3.7 | Font migration, viewport fix, JSON-LD, darkreader, skip-link, Vibe script, StatusBar render |
 | `src/app/(app)/layout.tsx` | 1.6 | Remove tRPC/Toaster, add main-content id |
-| `next.config.ts` | 1.7 | Velite webpack plugin, CSP headers, redirects |
+| `next.config.ts` | 1.7 | Velite config-based integration, CSP headers, redirects |
 | `src/app/_components/Header.tsx` | 3.2 | Logo redesign, remove ThemeToggle, mobile nav trigger |
 | `src/app/_components/MainNav.tsx` | 3.3 | Populate nav items, accent styling, font |
 | `src/app/_components/ReturnToTop.tsx` | 3.9 | Reposition for StatusBar, update colours |
