@@ -1,49 +1,13 @@
 # xexr.com
 
-Personal site and blog by Dane Poyzer. Built with Next.js, MDX, and Tailwind CSS.
+Source code for my personal site and blog at [xexr.com](https://xexr.com).
 
-## Architecture
+Built with Next.js, MDX, and Tailwind CSS. All content lives as files in the repository — no database, no CMS.
 
-- **Framework:** Next.js 16 with Turbopack
-- **Content:** MDX files processed by Velite at build time
-- **Styling:** Tailwind CSS 4 + shadcn/ui (Base UI React)
-- **Hosting:** Vercel
+## License
 
-All content is file-based — no database required.
+The code is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — free to use and adapt with attribution for non-commercial purposes.
 
-## Content Structure
+Written content in the `content/` directory is all rights reserved.
 
-```
-content/
-  posts/
-    hello-world/
-      index.mdx         # Post with frontmatter
-  projects/
-    gas-town.yaml        # Project data
-  bookshelf/
-    .gitkeep
-```
-
-## Getting Started
-
-1. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-
-2. Run the development server:
-   ```bash
-   pnpm dev
-   ```
-
-3. Open [http://localhost:3005](http://localhost:3005)
-
-## Scripts
-
-| Script           | Description              |
-| ---------------- | ------------------------ |
-| `pnpm dev`       | Start development server |
-| `pnpm build`     | Build for production     |
-| `pnpm typecheck` | Run TypeScript checks    |
-| `pnpm lint`      | Run ESLint               |
-| `pnpm test`      | Run all tests            |
+See [LICENSE](LICENSE) for details.

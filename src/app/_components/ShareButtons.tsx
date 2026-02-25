@@ -21,7 +21,19 @@ export default function ShareButtons({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = useCallback(async () => {
-    await navigator.clipboard.writeText(window.location.href);
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, []);
