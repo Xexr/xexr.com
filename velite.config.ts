@@ -1,4 +1,5 @@
 import rehypePrettyCode from "rehype-pretty-code";
+import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { createHighlighter, type ThemeRegistrationRaw } from "shiki";
 import { defineCollection, defineConfig, s } from "velite";
@@ -146,6 +147,7 @@ export default defineConfig({
     gfm: false,
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
+      rehypeSlug,
       [
         rehypePrettyCode,
         {

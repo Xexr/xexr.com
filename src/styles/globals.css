@@ -36,6 +36,16 @@
   }
 }
 
+/* Prose link underlines — explicit rule because prose-a:underline utility
+   loses specificity to the Tailwind v4 preflight a { text-decoration: inherit } */
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):hover {
+  text-decoration-color: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
