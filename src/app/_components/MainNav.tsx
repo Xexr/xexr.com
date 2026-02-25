@@ -52,7 +52,7 @@ export function MainNavItem({
         "text-sm transition-colors",
         isActive
           ? "text-accent"
-          : "text-muted-foreground hover:text-foreground",
+          : "text-muted-foreground hover:text-accent",
       )}
     >
       {children}

@@ -36,19 +36,19 @@ export default function Footer() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex gap-12" aria-label="Footer navigation">
-            <ul className="flex flex-col gap-2">
-              {primaryLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-accent text-sm underline decoration-transparent transition-colors hover:decoration-current"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <nav
+            className="flex items-center space-x-4 font-mono lg:space-x-6"
+            aria-label="Footer navigation"
+          >
+            {primaryLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-muted-foreground transition-colors hover:text-accent"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Social & Subscribe */}
