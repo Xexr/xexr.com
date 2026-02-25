@@ -4,10 +4,10 @@ import { Rss, Github } from "lucide-react";
 import { siteConfig } from "@/lib/siteConfig";
 
 const primaryLinks: { href: Route; label: string }[] = [
-  { href: "/posts" as Route, label: "Posts" },
-  { href: "/about" as Route, label: "About" },
-  { href: "/projects" as Route, label: "Projects" },
-  { href: "/now" as Route, label: "Now" },
+  { href: "/posts" as Route, label: "writing" },
+  { href: "/about" as Route, label: "about" },
+  { href: "/projects" as Route, label: "projects" },
+  { href: "/now" as Route, label: "now" },
 ];
 
 // Secondary links hidden until content is ready (per spec Q7)

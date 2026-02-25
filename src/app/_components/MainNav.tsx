@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 export const navItems: { href: string; label: string }[] = [
-  { href: "/posts", label: "Posts" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/now", label: "Now" },
+  { href: "/posts", label: "writing" },
+  { href: "/about", label: "about" },
+  { href: "/projects", label: "projects" },
+  { href: "/now", label: "now" },
 ];
 
 interface Props {
