@@ -25,6 +25,11 @@ export default function Footer() {
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-8">
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
+          {/* Branding */}
+          <Link href="/" className="text-accent font-mono text-lg">
+            xexr
+          </Link>
+
           {/* Navigation */}
           <nav
             className="flex items-center space-x-4 font-mono lg:space-x-6"
