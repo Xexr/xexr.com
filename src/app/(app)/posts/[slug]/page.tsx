@@ -94,7 +94,7 @@ export default async function PostPage({ params }: PageProps) {
         <article className="mx-auto max-w-[740px]">
           {/* Header */}
           <header className="mb-8">
-            <h1 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="font-sans text-3xl font-extrabold tracking-normal sm:text-4xl">
               {post.title}
             </h1>
 
@@ -123,8 +123,8 @@ export default async function PostPage({ params }: PageProps) {
                     href={`/posts?tag=${encodeURIComponent(tag)}` as Route}
                   >
                     <Badge
-                      variant="secondary"
-                      className="text-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+                      variant="accent"
+                      className="text-xs transition-colors hover:bg-accent/25"
                     >
                       {tag}
                     </Badge>

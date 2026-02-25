@@ -30,7 +30,7 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <article className="mx-auto max-w-2xl px-4 py-12">
+      <article className="mx-auto max-w-[740px] px-4 py-12">
         {/* Avatar */}
         <div className="mb-10 flex items-center gap-6">
           <div

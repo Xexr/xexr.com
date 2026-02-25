@@ -106,6 +106,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-tint: var(--accent-tint);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -174,6 +175,7 @@
   --accent-dim: color-mix(in srgb, var(--accent) 18%, transparent);
   --accent-soft: color-mix(in srgb, var(--accent) 25%, transparent);
   --accent-glow: color-mix(in srgb, var(--accent) 10%, transparent);
+  --accent-tint: color-mix(in srgb, var(--accent) 30%, var(--foreground));
   --card: #0a0a0a;
   --card-foreground: #e8e8e8;
   --popover: #0a0a0a;

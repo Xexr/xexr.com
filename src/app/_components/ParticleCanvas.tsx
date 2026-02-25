@@ -16,10 +16,16 @@ interface Particle {
   y: number
   vx: number
   vy: number
+  size: number
+  baseOpacity: number
+  pulseSpeed: number
+  pulseOffset: number
 }
 
-function getParticleCount(width: number): number {
-  return width < 768 ? 40 : 60 + Math.round((width / 1920) * 40)
+function getParticleCount(width: number, height: number): number {
+  if (width < 768) return 40
+  const area = width * height
+  return Math.min(200, 60 + Math.round(area / 12000))
 }
 
 function parseColor(raw: string): [number, number, number] {
@@ -34,7 +40,7 @@ function parseColor(raw: string): [number, number, number] {
   return [0, 255, 136]
 }
 
-export function ParticleCanvas() {
+export function ParticleCanvas({ className }: { className?: string } = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -69,18 +75,15 @@ export function ParticleCanvas() {
 
     function resize() {
       const dpr = window.devicePixelRatio || 1
-      const parent = canvas.parentElement
-      if (!parent) return
-      const rect = parent.getBoundingClientRect()
-      width = rect.width
-      height = rect.height
+      width = window.innerWidth
+      height = window.innerHeight
       canvas.width = width * dpr
       canvas.height = height * dpr
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = getParticleCount(width)
+      const count = getParticleCount(width, height)
       if (particles.length !== count) {
         initParticles(count)
       }
@@ -90,12 +93,17 @@ export function ParticleCanvas() {
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        size: Math.random() * 2 + 0.5,
+        baseOpacity: Math.random() * 0.5 + 0.3,
+        pulseSpeed: Math.random() * 0.0008 + 0.0003,
+        pulseOffset: Math.random() * Math.PI * 2,
       }))
     }
 
-    function draw() {
+    function draw(time?: number) {
+      const t = time ?? 0
       ctx.clearRect(0, 0, width, height)
 
       const [r, g, b] = parseColor(readAccentColor())
@@ -121,11 +129,15 @@ export function ParticleCanvas() {
             const dist = Math.sqrt(dx * dx + dy * dy)
             if (dist < mouseRadius && dist > 0) {
               const force = (mouseRadius - dist) / mouseRadius
-              p.x += (dx / dist) * force * 2
-              p.y += (dy / dist) * force * 2
+              p.x += (dx / dist) * force * 0.6
+              p.y += (dy / dist) * force * 0.6
             }
           }
         }
+
+        // Twinkle: modulate opacity with a sine wave
+        const twinkle = 0.5 + 0.5 * Math.sin(t * p.pulseSpeed + p.pulseOffset)
+        const particleOpacity = p.baseOpacity * twinkle
 
         for (let j = i + 1; j < particles.length; j++) {
           const other = particles[j]!
@@ -133,9 +145,9 @@ export function ParticleCanvas() {
           const dy = p.y - other.y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < connectionDistance) {
-            const opacity = 1 - dist / connectionDistance
-            ctx.strokeStyle = `rgba(${r},${g},${b},${opacity * 0.15})`
-            ctx.lineWidth = 0.5
+            const lineAlpha = (1 - dist / connectionDistance) * 0.4
+            ctx.strokeStyle = `rgba(${r},${g},${b},${lineAlpha})`
+            ctx.lineWidth = 0.6
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(other.x, other.y)
@@ -143,21 +155,22 @@ export function ParticleCanvas() {
           }
         }
 
-        ctx.fillStyle = `rgba(${r},${g},${b},0.4)`
+        ctx.fillStyle = `rgba(${r},${g},${b},${particleOpacity})`
         ctx.beginPath()
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
         ctx.fill()
       }
 
       const gradient = ctx.createRadialGradient(
         width / 2,
         height / 2,
-        Math.min(width, height) * 0.2,
+        Math.min(width, height) * 0.4,
         width / 2,
         height / 2,
-        Math.max(width, height) * 0.55
+        Math.max(width, height) * 0.75
       )
       gradient.addColorStop(0, "rgba(0,0,0,0)")
+      gradient.addColorStop(0.6, "rgba(0,0,0,0.3)")
       gradient.addColorStop(1, "rgba(0,0,0,1)")
       ctx.globalCompositeOperation = "destination-out"
       ctx.fillStyle = gradient
@@ -172,13 +185,15 @@ export function ParticleCanvas() {
     function onMouseMove(e: MouseEvent) {
       if (isTouch) return
       const rect = canvas.getBoundingClientRect()
-      mouseX = e.clientX - rect.left
-      mouseY = e.clientY - rect.top
-    }
-
-    function onMouseLeave() {
-      mouseX = -200
-      mouseY = -200
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        mouseX = x
+        mouseY = y
+      } else {
+        mouseX = -200
+        mouseY = -200
+      }
     }
 
     function onVisibilityChange() {
@@ -199,8 +214,7 @@ export function ParticleCanvas() {
 
     window.addEventListener("resize", resize)
     if (!isTouch) {
-      canvas.addEventListener("mousemove", onMouseMove)
-      canvas.addEventListener("mouseleave", onMouseLeave)
+      document.addEventListener("mousemove", onMouseMove)
     }
     document.addEventListener("visibilitychange", onVisibilityChange)
 
@@ -208,8 +222,7 @@ export function ParticleCanvas() {
       cancelAnimationFrame(animationId)
       window.removeEventListener("resize", resize)
       if (!isTouch) {
-        canvas.removeEventListener("mousemove", onMouseMove)
-        canvas.removeEventListener("mouseleave", onMouseLeave)
+        document.removeEventListener("mousemove", onMouseMove)
       }
       document.removeEventListener("visibilitychange", onVisibilityChange)
     }
@@ -220,7 +233,7 @@ export function ParticleCanvas() {
       ref={canvasRef}
       aria-hidden="true"
       data-slot="particle-canvas"
-      className="pointer-events-auto absolute inset-0 -z-10"
+      className={className ?? "pointer-events-none absolute inset-0 -z-10"}
     />
   )
 }

@@ -9,9 +9,11 @@ const POSTS_PER_PAGE = 10;
 export default function PostList({
   posts,
   tags,
+  totalCount,
 }: {
   posts: Post[];
   tags: string[];
+  totalCount: number;
 }) {
   const [selectedTag, setSelectedTag] = useQueryState(
     "tag",
@@ -67,9 +69,16 @@ export default function PostList({
       {/* Post list */}
       {paginated.length > 0 ? (
         <div className="divide-border divide-y">
-          {paginated.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
+          {paginated.map((post) => {
+            const idx = posts.indexOf(post);
+            return (
+              <PostCard
+                key={post.slug}
+                post={post}
+                number={totalCount - idx}
+              />
+            );
+          })}
         </div>
       ) : (
         <div className="py-16 text-center">

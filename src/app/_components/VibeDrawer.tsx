@@ -15,7 +15,9 @@ import {
   VIBE_PRESETS,
   DEFAULT_ACCENT,
   STORAGE_KEY,
+  PULSE_VALUE,
   loadVibeColour,
+  loadVibeRaw,
   saveVibeColour,
   meetsContrastAA,
   oklchToHex,
@@ -70,6 +72,14 @@ function useAccent() {
   return useSyncExternalStore(subscribeAccent, loadVibeColour, () => DEFAULT_ACCENT);
 }
 
+function useIsPulse() {
+  return useSyncExternalStore(
+    subscribeAccent,
+    () => loadVibeRaw() === PULSE_VALUE,
+    () => false,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // useMediaQuery – SSR-safe via useSyncExternalStore
 // ---------------------------------------------------------------------------
@@ -94,12 +104,16 @@ function useIsDesktop(): boolean {
 
 function DrawerContent({
   accent,
+  isPulse,
   onSelect,
+  onPulse,
   onClose,
   onPresetKeyDown,
 }: {
   accent: string;
+  isPulse: boolean;
   onSelect: (hex: string) => void;
+  onPulse: () => void;
   onClose: () => void;
   onPresetKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }) {
@@ -147,7 +161,7 @@ function DrawerContent({
     [onSelect],
   );
 
-  const isDefault = accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase();
+  const isDefault = !isPulse && accent.toLowerCase() === DEFAULT_ACCENT.toLowerCase();
 
   return (
     <div data-slot="vibe-drawer" className="flex flex-col gap-4">
@@ -164,15 +178,15 @@ function DrawerContent({
         </button>
       </div>
 
-      {/* Preset grid */}
+      {/* Preset grid — 5 columns, 2 rows */}
       <div
-        className="grid grid-cols-4 gap-2"
+        className="grid grid-cols-5 gap-2"
         role="radiogroup"
         aria-label="Colour presets"
         onKeyDown={onPresetKeyDown}
       >
         {VIBE_PRESETS.map((preset) => {
-          const isActive = accent.toLowerCase() === preset.hex.toLowerCase();
+          const isActive = !isPulse && accent.toLowerCase() === preset.hex.toLowerCase();
           return (
             <button
               key={preset.hex}
@@ -181,7 +195,7 @@ function DrawerContent({
               aria-checked={isActive}
               onClick={() => handlePresetClick(preset.hex)}
               className={cn(
-                "flex flex-col items-center gap-1.5 rounded-lg border px-2 py-2 text-xs transition-colors outline-none",
+                "flex flex-col items-center gap-1.5 rounded-lg border px-1 py-2 text-xs transition-colors outline-none",
                 "focus-visible:ring-ring/50 focus-visible:ring-[3px]",
                 isActive
                   ? "border-white/20 bg-white/10 text-foreground"
@@ -197,6 +211,29 @@ function DrawerContent({
             </button>
           );
         })}
+        {/* Pulse mode — last slot */}
+        <button
+          type="button"
+          role="radio"
+          aria-checked={isPulse}
+          onClick={onPulse}
+          className={cn(
+            "flex flex-col items-center gap-1.5 rounded-lg border px-1 py-2 text-xs transition-colors outline-none",
+            "focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+            isPulse
+              ? "border-white/20 bg-white/10 text-foreground"
+              : "border-transparent bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground",
+          )}
+        >
+          <span
+            className="inline-block size-5 rounded-full ring-1 ring-white/10"
+            style={{
+              background: "conic-gradient(#ff6b6b, #ffd700, #a3e635, #00ff88, #38bdf8, #a78bfa, #f472b6, #ff6b6b)",
+            }}
+            aria-hidden="true"
+          />
+          <span className="font-mono leading-none">Pulse</span>
+        </button>
       </div>
 
       {/* Spectrum slider */}
@@ -240,7 +277,7 @@ function DrawerContent({
             aria-hidden="true"
           />
           <span className="font-mono text-xs text-muted-foreground">
-            {accent.toLowerCase()}
+            {isPulse ? "pulse" : accent.toLowerCase()}
           </span>
         </div>
         {!isDefault && (
@@ -261,6 +298,10 @@ function DrawerContent({
 // VibeDrawer (responsive: Dialog on mobile, Popover on desktop)
 // ---------------------------------------------------------------------------
 
+/** Pulse cycle: ~30 seconds per full hue rotation */
+const PULSE_INTERVAL_MS = 50;
+const PULSE_HUE_STEP = 0.9; // degrees per tick → 360° / 0.9 * 50ms ≈ 20s
+
 export default function VibeDrawer({
   open,
   onOpenChange,
@@ -271,7 +312,9 @@ export default function VibeDrawer({
   anchorRef?: React.RefObject<HTMLElement | null>;
 }) {
   const accent = useAccent();
+  const isPulse = useIsPulse();
   const isDesktop = useIsDesktop();
+  const pulseHueRef = useRef(0);
 
   // Apply stored accent on mount so colours persist across page reloads
   useEffect(() => {
@@ -281,15 +324,38 @@ export default function VibeDrawer({
     }
   }, []);
 
+  // Pulse mode: cycle hues on an interval (paused while drawer is open)
+  useEffect(() => {
+    if (!isPulse || open) return;
+    const { l, c } = hexToOklch(DEFAULT_ACCENT);
+    const id = setInterval(() => {
+      pulseHueRef.current = (pulseHueRef.current + PULSE_HUE_STEP) % 360;
+      let hex = oklchToHex(l, c, pulseHueRef.current);
+      if (!meetsContrastAA(hex)) {
+        let testL = l;
+        while (!meetsContrastAA(hex) && testL < 0.95) {
+          testL += 0.02;
+          hex = oklchToHex(testL, c, pulseHueRef.current);
+        }
+      }
+      applyAccent(hex);
+    }, PULSE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [isPulse, open]);
+
   const handleSelect = useCallback(
     (hex: string) => {
       applyAccent(hex);
       saveVibeColour(hex);
-      // Notify same-tab subscribers (StorageEvent only fires in other tabs)
       window.dispatchEvent(new Event(VIBE_CHANGE_EVENT));
     },
     [],
   );
+
+  const handlePulse = useCallback(() => {
+    saveVibeColour(PULSE_VALUE);
+    window.dispatchEvent(new Event(VIBE_CHANGE_EVENT));
+  }, []);
 
   const handleClose = useCallback(() => {
     onOpenChange(false);
@@ -298,7 +364,7 @@ export default function VibeDrawer({
   // Tab sync: listen for storage events to update CSS vars from other tabs
   useEffect(() => {
     function onStorage(e: StorageEvent) {
-      if (e.key === STORAGE_KEY && e.newValue) {
+      if (e.key === STORAGE_KEY && e.newValue && e.newValue !== PULSE_VALUE) {
         applyAccent(e.newValue);
       }
     }
@@ -337,7 +403,9 @@ export default function VibeDrawer({
   const content = (
     <DrawerContent
       accent={accent}
+      isPulse={isPulse}
       onSelect={handleSelect}
+      onPulse={handlePulse}
       onClose={handleClose}
       onPresetKeyDown={handlePresetKeyDown}
     />
@@ -383,11 +451,12 @@ export default function VibeDrawer({
           align="end"
           sideOffset={12}
           anchor={anchorRef}
+          className="z-50"
         >
           <PopoverPrimitive.Popup
             data-slot="vibe-drawer-popup"
             className={cn(
-              "z-50 w-72 rounded-xl bg-[#0a0a0a] p-5",
+              "z-50 w-80 rounded-xl bg-[#0a0a0a] p-5",
               "ring-1 ring-white/10",
               "data-open:animate-in data-closed:animate-out",
               "data-open:fade-in-0 data-open:zoom-in-95",

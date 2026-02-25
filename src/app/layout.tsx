@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const vibeScript = `(function(){try{var v=localStorage.getItem("xexr-vibe");if(v)document.documentElement.style.setProperty("--accent",v)}catch(e){}})()`;
+const vibeScript = `(function(){try{var v=localStorage.getItem("xexr-vibe");if(v&&v!=="pulse")document.documentElement.style.setProperty("--accent",v)}catch(e){}})()`;
 
 export default function RootLayout({
   children,

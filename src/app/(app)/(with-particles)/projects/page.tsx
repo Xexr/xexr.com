@@ -110,7 +110,7 @@ function ProjectRow({ project }: { project: Project }) {
 
 export default function ProjectsPage() {
   return (
-    <article className="mx-auto max-w-2xl px-4 py-12">
+    <article className="mx-auto max-w-[740px] px-4 py-12">
       <h1 className="mb-2 text-3xl font-bold tracking-tight">Projects</h1>
       <p className="text-muted-foreground mb-8">
         Things I&apos;m building, maintaining, and have shipped.

@@ -2,27 +2,37 @@ export type VibePreset = { name: string; hex: string };
 
 export const DEFAULT_ACCENT = "#00ff88";
 export const STORAGE_KEY = "xexr-vibe";
+export const PULSE_VALUE = "pulse";
 
 export const VIBE_PRESETS: VibePreset[] = [
   { name: "Mint", hex: "#00ff88" },
-  { name: "Amber", hex: "#ffb300" },
-  { name: "Cyan", hex: "#00e5ff" },
   { name: "Coral", hex: "#ff6b6b" },
-  { name: "Ice", hex: "#88ccff" },
-  { name: "Green", hex: "#44ff44" },
-  { name: "Orange", hex: "#ff8800" },
-  { name: "Pink", hex: "#ff44aa" },
+  { name: "Gold", hex: "#ffd700" },
+  { name: "Cyan", hex: "#00e5ff" },
+  { name: "Violet", hex: "#a78bfa" },
+  { name: "Rose", hex: "#f472b6" },
+  { name: "Lime", hex: "#a3e635" },
+  { name: "Sky", hex: "#38bdf8" },
+  { name: "Ember", hex: "#fb923c" },
 ];
 
 // --- localStorage helpers ---
 
-export function loadVibeColour(): string {
+export function loadVibeRaw(): string {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ?? DEFAULT_ACCENT;
+    return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_ACCENT;
   } catch {
     return DEFAULT_ACCENT;
   }
+}
+
+export function loadVibeColour(): string {
+  const raw = loadVibeRaw();
+  return raw === PULSE_VALUE ? DEFAULT_ACCENT : raw;
+}
+
+export function isVibePulse(): boolean {
+  return loadVibeRaw() === PULSE_VALUE;
 }
 
 export function saveVibeColour(hex: string): void {

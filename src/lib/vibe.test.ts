@@ -233,8 +233,8 @@ describe("deriveAccentVars", () => {
 });
 
 describe("VIBE_PRESETS", () => {
-  it("has 8 presets", () => {
-    expect(VIBE_PRESETS).toHaveLength(8);
+  it("has 9 presets", () => {
+    expect(VIBE_PRESETS).toHaveLength(9);
   });
 
   it("all presets have valid hex format", () => {

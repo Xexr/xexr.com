@@ -18,7 +18,7 @@ export default async function Header() {
       </Link>
 
       {/* Right: Desktop nav + vibe pill + mobile hamburger */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <MainNav className="hidden md:flex" />
         <VibePill />
         <MobileNav />
