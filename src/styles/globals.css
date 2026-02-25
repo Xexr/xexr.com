@@ -17,6 +17,9 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     letter-spacing: var(--tracking-normal);
     color: var(--body-text);
