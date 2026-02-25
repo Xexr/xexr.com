@@ -25,10 +25,15 @@ export default function Footer() {
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-8">
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
-          {/* Branding */}
-          <Link href="/" className="text-accent font-mono text-lg">
-            xexr
-          </Link>
+          {/* Branding + Copyright */}
+          <div className="flex flex-col gap-1">
+            <Link href="/" className="text-accent font-mono text-lg">
+              xexr
+            </Link>
+            <p className="text-muted-foreground text-xs">
+              &copy; {new Date().getFullYear()} {siteConfig.name}
+            </p>
+          </div>
 
           {/* Navigation + Social */}
           <div className="flex gap-12 sm:gap-16">
@@ -93,11 +98,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
-        <p className="text-muted-foreground text-xs">
-          &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
-          reserved.
-        </p>
       </div>
     </footer>
   );
