@@ -1,10 +1,12 @@
 import { MainNav } from "./MainNav";
 import { MobileNav } from "./MobileNav";
+import VibePill from "./VibePill";
 import Link from "next/link";
 
 export default async function Header() {
   return (
     <header className="flex h-16 w-full items-center justify-between px-4">
+      {/* Left: Logo */}
       <Link
         href="/"
         className="flex items-center gap-2 font-mono text-xl tracking-tighter"
@@ -14,8 +16,13 @@ export default async function Header() {
         </span>
         <span className="tracking-normal">xexr</span>
       </Link>
-      <MainNav className="hidden md:flex" />
-      <MobileNav />
+
+      {/* Right: Desktop nav + vibe pill + mobile hamburger */}
+      <div className="flex items-center gap-4">
+        <MainNav className="hidden md:flex" />
+        <VibePill />
+        <MobileNav />
+      </div>
     </header>
   );
 }

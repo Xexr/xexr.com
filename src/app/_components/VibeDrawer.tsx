@@ -379,8 +379,8 @@ export default function VibeDrawer({
     <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Positioner
-          side="top"
-          align="center"
+          side="bottom"
+          align="end"
           sideOffset={12}
           anchor={anchorRef}
         >

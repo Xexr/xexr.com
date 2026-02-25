@@ -58,24 +58,6 @@
     animation-iteration-count: 1 !important;
   }
 
-  .status-bar-pulse {
-    animation: none;
-    box-shadow: 0 0 6px 1px var(--accent-glow);
-  }
-}
-
-.status-bar-pulse {
-  animation: vibe-pulse 2s ease-in-out 3;
-}
-
-@keyframes vibe-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-  50% {
-    box-shadow: 0 0 8px 2px var(--accent-glow);
-  }
 }
 
 @layer utilities {
