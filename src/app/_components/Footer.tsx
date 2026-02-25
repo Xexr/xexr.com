@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Rss, Github } from "lucide-react";
 import { siteConfig } from "@/lib/siteConfig";
+import SocialLinks from "./SocialLinks";
 
 const primaryLinks: { href: Route; label: string }[] = [
   { href: "/posts" as Route, label: "writing" },
@@ -23,81 +23,35 @@ export default function Footer() {
       data-slot="footer"
       className="border-border mt-auto border-t px-4 py-8"
     >
-      <div className="mx-auto flex max-w-4xl flex-col gap-8">
-        <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
-          {/* Branding + Copyright */}
-          <div className="flex flex-col gap-1">
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+        {/* Top row: branding + social */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-baseline gap-3">
             <Link href="/" className="text-accent font-mono text-lg">
               xexr
             </Link>
             <p className="text-muted-foreground text-xs">
-              &copy; {new Date().getFullYear()} {siteConfig.name}
+              &copy; {new Date().getFullYear()} {siteConfig.author.name}
             </p>
           </div>
-
-          {/* Navigation + Social */}
-          <div className="flex gap-12 sm:gap-16">
-            <nav
-              className="flex flex-col gap-2 font-mono"
-              aria-label="Footer navigation"
-            >
-              {primaryLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-accent"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <a
-                  href={siteConfig.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                  className="text-muted-foreground hover:text-accent transition-colors"
-                >
-                  <Github className="size-5" />
-                </a>
-                <a
-                  href={siteConfig.twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter / X"
-                  className="text-muted-foreground hover:text-accent transition-colors"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="size-5 fill-current"
-                    aria-hidden="true"
-                  >
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                </a>
-                <Link
-                  href={"/api/rss" as Route}
-                  aria-label="RSS feed"
-                  className="text-muted-foreground hover:text-accent transition-colors"
-                >
-                  <Rss className="size-5" />
-                </Link>
-              </div>
-              <a
-                href={siteConfig.substackUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-accent text-sm font-mono transition-colors"
-              >
-                subscribe
-              </a>
-            </div>
-          </div>
+          <SocialLinks iconSize="size-4" showRss />
         </div>
 
+        {/* Nav links row */}
+        <nav
+          className="flex justify-center gap-6 font-mono"
+          aria-label="Footer navigation"
+        >
+          {primaryLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-muted-foreground transition-colors hover:text-accent"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   );

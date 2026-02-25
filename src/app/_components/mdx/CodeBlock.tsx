@@ -45,7 +45,19 @@ function CodeBlock({
   const handleCopy = useCallback(async () => {
     const raw = preRef.current?.textContent ?? ""
     const cleaned = stripDecorations(raw)
-    await navigator.clipboard.writeText(cleaned)
+    try {
+      await navigator.clipboard.writeText(cleaned)
+    } catch {
+      // Fallback for insecure contexts (http://)
+      const ta = document.createElement("textarea")
+      ta.value = cleaned
+      ta.style.position = "fixed"
+      ta.style.opacity = "0"
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand("copy")
+      document.body.removeChild(ta)
+    }
     setCopied(true)
     setTimeout(() => setCopied(false), COPY_FEEDBACK_MS)
   }, [])
@@ -62,24 +74,19 @@ function CodeBlock({
   return (
     <div
       data-slot="code-block"
-      className="group/code relative my-6 rounded-[10px] bg-[#0d0d0d]"
+      className="group/code relative my-6 rounded-[10px] border border-white/10 bg-[#111]"
     >
-      {/* macOS window chrome */}
-      <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3">
-        <div className="flex gap-1.5" aria-hidden="true">
-          <span className="size-3 rounded-full bg-[#ff5f57]" />
-          <span className="size-3 rounded-full bg-[#febc2e]" />
-          <span className="size-3 rounded-full bg-[#28c840]" />
-        </div>
+      {/* Header bar */}
+      <div className="flex items-center border-b border-white/10 px-5 py-2">
         {filename && (
-          <span className="ml-2 font-mono text-xs text-[#6a6a6a]">
+          <span className="font-mono text-xs text-[#6a6a6a]">
             {filename}
           </span>
         )}
         <button
           type="button"
           onClick={handleCopy}
-          className="ml-auto flex size-[44px] shrink-0 items-center justify-center rounded-md text-[#6a6a6a] transition-colors hover:text-[#e8e8e8]"
+          className="ml-auto flex size-8 shrink-0 items-center justify-center rounded-md text-[#6a6a6a] transition-colors hover:text-[#e8e8e8]"
           aria-label={copied ? "Copied" : "Copy code"}
         >
           {copied ? (
@@ -92,14 +99,14 @@ function CodeBlock({
 
       {/* Code area */}
       <div
-        className={cn("overflow-x-auto", {
+        className={cn("overflow-x-auto px-6 py-5", {
           "max-h-[calc(30lh+2rem)] overflow-y-hidden": shouldCollapse,
         })}
       >
         <pre
           ref={preRef}
           className={cn(
-            "p-4 font-mono text-sm leading-relaxed [&_[data-highlighted-line]]:bg-[var(--accent-dim)]",
+            "font-mono text-sm leading-relaxed [&_[data-highlighted-line]]:bg-[var(--accent-dim)]",
             className
           )}
           {...props}

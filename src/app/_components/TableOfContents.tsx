@@ -17,8 +17,9 @@ function getSnapshot() {
   return cachedHeadings;
 }
 
+const EMPTY: TocItem[] = [];
 function getServerSnapshot() {
-  return [] as TocItem[];
+  return EMPTY;
 }
 
 function subscribe(cb: () => void) {
@@ -114,7 +115,7 @@ export default function TableOfContents({
 
   if (variant === "mobile") {
     return (
-      <div className="mb-8 rounded-lg border border-border p-4 min-[1200px]:hidden">
+      <div className="mb-8 rounded-lg border border-border p-4 xl:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex w-full items-center gap-2 text-sm font-medium text-foreground"
@@ -138,7 +139,7 @@ export default function TableOfContents({
   return (
     <nav
       aria-label="Table of contents"
-      className="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto min-[1200px]:block"
+      className="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto xl:block"
     >
       <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         On this page

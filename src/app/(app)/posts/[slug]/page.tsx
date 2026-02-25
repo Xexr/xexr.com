@@ -85,18 +85,18 @@ export default async function PostPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="relative mx-auto max-w-5xl px-4 py-12">
-        {/* Desktop ToC positioned in right margin */}
-        <aside className="absolute top-12 right-0 hidden w-56 min-[1200px]:block">
-          <TableOfContents variant="desktop" />
-        </aside>
-
-        <article className="mx-auto max-w-[740px]">
+      <div className="relative mx-auto max-w-[740px] px-4 py-12">
+        <article>
           {/* Header */}
-          <header className="mb-8">
+          <header className="relative mb-8">
             <h1 className="font-sans text-3xl font-extrabold tracking-normal sm:text-4xl">
               {post.title}
             </h1>
+
+            {/* Desktop ToC floating in right margin, aligned with metadata */}
+            <aside className="absolute top-full left-full ml-8 hidden w-48 xl:block">
+              <TableOfContents variant="desktop" />
+            </aside>
 
             {/* Metadata bar */}
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">

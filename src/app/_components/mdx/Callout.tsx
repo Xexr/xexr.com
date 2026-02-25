@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const calloutVariants = cva(
-  "my-6 flex gap-3 rounded-md border-l-4 p-4",
+  "my-6 flex items-center gap-3 rounded-md border-l-4 px-4 py-2.5",
   {
     variants: {
       variant: {
@@ -50,10 +50,10 @@ function Callout({
       className={cn(calloutVariants({ variant: resolvedVariant, className }))}
       role="note"
     >
-      <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+      <Icon className="size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0">
-        <p className="mb-1 text-sm font-semibold">{label}</p>
-        <div className="text-sm [&>p]:m-0">{children}</div>
+        <p className="!mt-0 mb-1 text-sm font-semibold">{label}</p>
+        <div className="text-sm [&>p]:!m-0">{children}</div>
       </div>
     </div>
   )

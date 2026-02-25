@@ -65,6 +65,7 @@ export function ParticleCanvas({ className }: { className?: string } = {}) {
     let mouseX = -200
     let mouseY = -200
     let animationId = 0
+    let resizeTimer = 0
 
     function readAccentColor(): string {
       const raw = getComputedStyle(document.documentElement)
@@ -73,7 +74,7 @@ export function ParticleCanvas({ className }: { className?: string } = {}) {
       return raw || "#00ff88"
     }
 
-    function resize() {
+    function applyResize() {
       const dpr = window.devicePixelRatio || 1
       width = window.innerWidth
       height = window.innerHeight
@@ -83,10 +84,12 @@ export function ParticleCanvas({ className }: { className?: string } = {}) {
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = getParticleCount(width, height)
-      if (particles.length !== count) {
-        initParticles(count)
-      }
+      initParticles(getParticleCount(width, height))
+    }
+
+    function resize() {
+      clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(applyResize, 200)
     }
 
     function initParticles(count: number) {
@@ -204,7 +207,7 @@ export function ParticleCanvas({ className }: { className?: string } = {}) {
       }
     }
 
-    resize()
+    applyResize()
 
     if (reducedMotion) {
       draw()
@@ -219,6 +222,7 @@ export function ParticleCanvas({ className }: { className?: string } = {}) {
     document.addEventListener("visibilitychange", onVisibilityChange)
 
     return () => {
+      clearTimeout(resizeTimer)
       cancelAnimationFrame(animationId)
       window.removeEventListener("resize", resize)
       if (!isTouch) {
