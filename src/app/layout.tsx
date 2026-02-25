@@ -47,6 +47,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(plusJakartaSans.variable, jetbrainsMono.variable, "dark")}
+      suppressHydrationWarning
     >
       <head>
         <meta name="darkreader-lock" />
