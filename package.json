@@ -57,12 +57,5 @@
   "ct3aMetadata": {
     "initVersion": "7.37.0"
   },
-  "packageManager": "pnpm@9.9.0",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.2.3",
-      "@types/react-dom": "19.2.3",
-      "zod-validation-error": "^5.0.0"
-    }
-  }
+  "packageManager": "pnpm@11.21.0"
 }
